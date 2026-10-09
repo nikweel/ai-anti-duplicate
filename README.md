@@ -35,6 +35,12 @@ Get the file for your system from the [**Releases**](https://github.com/nikweel/
 
 On the first launch you choose the AI model in Settings and the app downloads it once (needs internet). After that it works fully offline.
 
+## Security warnings on first launch (this is normal)
+The app is free and not code-signed (certificates cost money), so your system may warn you. The app is open source and only *copies* files; you can verify downloads with `SHA256SUMS.txt` from the release (`sha256sum -c SHA256SUMS.txt`).
+- **Windows:** "Windows protected your PC" → click **More info → Run anyway**.
+- **macOS:** open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the app (on older macOS: right-click the app → *Open*).
+- **Linux:** no warnings. For AppImage just allow executing it (right-click → Properties → *Allow executing as program*).
+
 ## Run from source (portable, no manual setup)
 Download the repository and double-click `start.cmd` (Windows), `start.command` (macOS) or `start.sh` (Linux).
 The first run downloads Python and all dependencies into the local `runtime/` folder automatically.
