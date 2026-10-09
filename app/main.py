@@ -16,16 +16,10 @@ def main() -> int:
         app.setApplicationName("AI Anti-Duplicate")
         app.setDesktopFileName("ai-anti-duplicate")
         app.setStyle("Fusion")
-        from PySide6.QtGui import QColor, QPalette
+        from .gui import theme
+        from .utils import settings
 
-        pal = QPalette()
-        for role, color in ((QPalette.Window, "#1b1e26"), (QPalette.WindowText, "#e6e9ef"), (QPalette.Base, "#2a2f3a"),
-                            (QPalette.AlternateBase, "#22262f"), (QPalette.Text, "#e6e9ef"), (QPalette.Button, "#2a2f3a"),
-                            (QPalette.ButtonText, "#e6e9ef"), (QPalette.Highlight, "#3d73f0"),
-                            (QPalette.HighlightedText, "#ffffff"), (QPalette.ToolTipBase, "#2a2f3a"),
-                            (QPalette.ToolTipText, "#e6e9ef")):
-            pal.setColor(role, QColor(color))
-        app.setPalette(pal)
+        theme.apply_palette(app, settings.get("theme", "dark"))
         i18n.init()
         win = MainWindow()
         win.show()

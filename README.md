@@ -17,6 +17,12 @@ The interface is dark and available in English and Russian (language switcher in
 
 The **Sensitivity** slider controls how similar two photos must be: *Strict* finds only near-identical files, *Soft* also finds similar shots from the same scene.
 
+## Settings (⚙ button)
+- **Language:** English / Русский.
+- **Theme:** dark, light or follow the system.
+- **Model:** *Fast* (176 MB, works well on a CPU) or *Accurate* (608 MB, tells similar shots apart better, recommended with a GPU). The size of each download is shown before you choose. On the first launch no model is installed: the app asks you to pick one in Settings and then downloads it with a progress bar.
+- **Device:** Auto / CPU / GPU. Auto uses the graphics card when available (DirectML on Windows, CoreML on macOS) and falls back to the CPU if anything goes wrong.
+
 ## Download (no installation of Python needed)
 Get the file for your system from the [**Releases**](https://github.com/nikweel/ai-anti-duplicate/releases/latest) page:
 
@@ -27,7 +33,7 @@ Get the file for your system from the [**Releases**](https://github.com/nikweel/
 | **Linux (Ubuntu/Debian)** | `….deb` | Double-click → *Install*. The app appears in your menu. |
 | **macOS** | `….dmg` | Open, drag the app to *Applications*. First launch: right-click → *Open* (the app is not signed). |
 
-On the first launch the app downloads the AI model once (168 MB, needs internet). After that it works fully offline.
+On the first launch you choose the AI model in Settings and the app downloads it once (needs internet). After that it works fully offline.
 
 ## Run from source (portable, no manual setup)
 Download the repository and double-click `start.cmd` (Windows), `start.command` (macOS) or `start.sh` (Linux).

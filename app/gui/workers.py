@@ -19,9 +19,13 @@ class ModelWorker(QThread):
     loaded = Signal(object)
     failed = Signal(str)
 
+    def __init__(self, model_id: str = "fast", device: str = "auto"):
+        super().__init__()
+        self.model_id, self.device = model_id, device
+
     def run(self):
         try:
-            self.loaded.emit(load_model(lambda f, m: self.progress.emit(f, m)))
+            self.loaded.emit(load_model(self.model_id, self.device, lambda f, m: self.progress.emit(f, m)))
         except Exception as e:
             log.exception("Ошибка загрузки модели")
             self.failed.emit(tr("model_fail", e=e))

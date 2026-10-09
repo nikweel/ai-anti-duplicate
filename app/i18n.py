@@ -1,9 +1,6 @@
-import json
 import locale
 
-from .utils.paths import DATA_DIR
-
-SETTINGS = DATA_DIR / "settings.json"
+from .utils import settings
 
 TEXTS = {
     "ru": {
@@ -21,7 +18,19 @@ TEXTS = {
         "review_title": "Дубликаты {n} из {t}", "review_hint": "Нажмите на картинку для увеличения. Выберите файл, который оставить.",
         "cancel": "Отмена", "keep": "Оставить выбранный", "kb": "КБ",
         "scanning": "Поиск файлов...", "analysis": "Анализ: {d}/{t}", "grouping": "Группировка...",
-        "model_check": "Проверка модели...", "model_dl": "Загрузка модели: {d}/{t} МБ", "model_mem": "Загрузка модели в память...",
+        "model_check": "Проверка модели...", "model_dl": "Загрузка модели: {p}% ({d}/{t} МБ)", "model_mem": "Загрузка модели в память...",
+        "model_label": "Модель:", "model_fast": "Быстрая (168 МБ, подходит для процессора)",
+        "model_accurate": "Точная (580 МБ, лучше с видеокартой)", "device_label": "Устройство:",
+        "device_auto": "Авто", "device_cpu": "Процессор", "device_gpu": "Видеокарта",
+        "ready_dev": "Готово. Устройство: {dev}. Выберите папки.",
+        "settings": "Настройки", "settings_title": "Настройки", "theme_label": "Тема:", "theme_dark": "Тёмная",
+        "theme_light": "Светлая", "theme_system": "Как в системе", "model_group": "Модель распознавания",
+        "model_fast_t": "Быстрая", "model_accurate_t": "Точная",
+        "model_fast_d": "{mb} МБ. Хорошо работает на процессоре.",
+        "model_accurate_d": "{mb} МБ. Лучше различает похожие кадры, рекомендуется с видеокартой.",
+        "model_have": "уже скачана", "model_need": "будет скачано {mb} МБ", "ok": "Применить", "close": "Закрыть",
+        "choose_model_msg": "Модель распознавания ещё не скачана.\n\nВыберите модель в настройках: после выбора начнётся загрузка.",
+        "choose_model_status": "Выберите модель в настройках (⚙).",
         "model_fail": "Не удалось загрузить модель (проверьте интернет): {e}",
     },
     "en": {
@@ -39,7 +48,19 @@ TEXTS = {
         "review_title": "Duplicates {n} of {t}", "review_hint": "Click a picture to enlarge it. Choose the file to keep.",
         "cancel": "Cancel", "keep": "Keep selected", "kb": "KB",
         "scanning": "Searching files...", "analysis": "Analysing: {d}/{t}", "grouping": "Grouping...",
-        "model_check": "Checking model...", "model_dl": "Downloading model: {d}/{t} MB", "model_mem": "Loading model into memory...",
+        "model_check": "Checking model...", "model_dl": "Downloading model: {p}% ({d}/{t} MB)", "model_mem": "Loading model into memory...",
+        "model_label": "Model:", "model_fast": "Fast (168 MB, good for CPU)",
+        "model_accurate": "Accurate (580 MB, best with a GPU)", "device_label": "Device:",
+        "device_auto": "Auto", "device_cpu": "CPU", "device_gpu": "GPU",
+        "ready_dev": "Ready. Device: {dev}. Choose the folders.",
+        "settings": "Settings", "settings_title": "Settings", "theme_label": "Theme:", "theme_dark": "Dark",
+        "theme_light": "Light", "theme_system": "Follow system", "model_group": "Recognition model",
+        "model_fast_t": "Fast", "model_accurate_t": "Accurate",
+        "model_fast_d": "{mb} MB. Works well on a CPU.",
+        "model_accurate_d": "{mb} MB. Tells similar shots apart better, recommended with a GPU.",
+        "model_have": "already downloaded", "model_need": "{mb} MB will be downloaded", "ok": "Apply", "close": "Close",
+        "choose_model_msg": "The recognition model has not been downloaded yet.\n\nChoose a model in Settings: the download starts after you choose.",
+        "choose_model_status": "Choose a model in Settings (⚙).",
         "model_fail": "Could not load the model (check your internet connection): {e}",
     },
 }
@@ -48,12 +69,9 @@ _lang = "ru"
 
 
 def _load() -> str:
-    try:
-        lang = json.loads(SETTINGS.read_text(encoding="utf-8")).get("lang")
-        if lang in TEXTS:
-            return lang
-    except Exception:
-        pass
+    lang = settings.get("lang")
+    if lang in TEXTS:
+        return lang
     try:
         return "ru" if (locale.getlocale()[0] or "").lower().startswith(("ru", "russian")) else "en"
     except Exception:
@@ -72,11 +90,7 @@ def get_lang() -> str:
 def set_lang(lang: str) -> None:
     global _lang
     _lang = lang
-    try:
-        SETTINGS.parent.mkdir(parents=True, exist_ok=True)
-        SETTINGS.write_text(json.dumps({"lang": lang}), encoding="utf-8")
-    except Exception:
-        pass
+    settings.put("lang", lang)
 
 
 def tr(key: str, **kw) -> str:

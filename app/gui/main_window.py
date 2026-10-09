@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import QTimer, Qt, Signal
 from PySide6.QtGui import QGuiApplication, QIcon, QPixmap
 from PySide6.QtWidgets import (
-    QButtonGroup, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
+    QApplication, QButtonGroup, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
     QPushButton, QRadioButton, QSlider, QVBoxLayout, QWidget,
 )
 
@@ -11,9 +11,12 @@ from ..utils.paths import ICON
 from ..data.models import DuplicateGroup
 from ..services.exporter import export_unique
 from .. import i18n
+from ..core.model_manager import MODELS, is_downloaded
+from ..utils import settings
 from ..i18n import tr
 from ..services.selection import RULES, pick_newest
-from .style import build_style
+from . import theme
+from .settings_dialog import SettingsDialog
 from .workers import ModelWorker, ScanWorker
 
 
@@ -105,10 +108,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("AI Anti-Duplicate")
         self.setMinimumWidth(520)
         self.setWindowIcon(QIcon(str(ICON)))
-        self.model = None
         self.src: Path | None = None
         self.dst: Path | None = None
         self.worker = None
+        self.model = None
+        self._cur_px = 13
         self._status_key = "loading_model"
 
         w = QWidget()
@@ -119,14 +123,9 @@ class MainWindow(QMainWindow):
 
         top = QHBoxLayout()
         top.addStretch()
-        self.lang_lbl = QLabel()
-        self.lang = QComboBox()
-        for code, name in i18n.LANGS.items():
-            self.lang.addItem(name, code)
-        self.lang.setCurrentIndex(self.lang.findData(i18n.get_lang()))
-        self.lang.currentIndexChanged.connect(self._lang_changed)
-        top.addWidget(self.lang_lbl)
-        top.addWidget(self.lang)
+        self.settings_btn = QPushButton()
+        self.settings_btn.clicked.connect(self.open_settings)
+        top.addWidget(self.settings_btn)
         lay.addLayout(top)
 
         self.src_btn, self.src_lbl = self._picker(lay, self.pick_src)
@@ -160,11 +159,67 @@ class MainWindow(QMainWindow):
             lay.addWidget(x)
         self.retranslate()
 
-        self.worker = ModelWorker()
+        QTimer.singleShot(0, self.start_up)
+
+    def current_model(self) -> str | None:
+        """Выбранная модель; если не выбрана, берём любую уже скачанную."""
+        mid = settings.get("model")
+        if mid in MODELS:
+            return mid
+        return next((m for m in MODELS if is_downloaded(m)), None)
+
+    def start_up(self):
+        mid = self.current_model()
+        if mid and is_downloaded(mid):
+            self.load_engine(mid)
+            return
+        self._status_key = "choose_model_status"
+        self.status.setText(tr("choose_model_status"))
+        QMessageBox.information(self, "AI Anti-Duplicate", tr("choose_model_msg"))
+        self.open_settings()
+
+    def load_engine(self, mid: str):
+        self.model = None
+        self._status_key = "loading_model"
+        self.status.setText(tr("loading_model"))
+        self.bar.setValue(0)
+        self.model_id = mid
+        self._busy(True)
+        self.worker = ModelWorker(mid, settings.get("device", "auto"))
         self.worker.progress.connect(self.on_progress)
         self.worker.loaded.connect(self.on_model)
-        self.worker.failed.connect(self.on_error)
+        self.worker.failed.connect(self.on_engine_error)
         self.worker.start()
+
+    def open_settings(self):
+        if self.worker and self.worker.isRunning():
+            return
+        old_mid, old_dev = self.current_model(), settings.get("device", "auto")
+        dlg = SettingsDialog(self, old_mid)
+        if dlg.exec() != QDialog.Accepted:
+            if not self.model and self.current_model() and is_downloaded(self.current_model()):
+                self.load_engine(self.current_model())
+            return
+        i18n.set_lang(dlg.lang.currentData())
+        settings.put("theme", dlg.theme.currentData())
+        settings.put("device", dlg.device.currentData())
+        self.apply_theme()
+        self.retranslate()
+        mid = dlg.chosen_model()
+        if mid:
+            settings.put("model", mid)
+        if mid and (mid != old_mid or dlg.device.currentData() != old_dev or not self.model):
+            self.load_engine(mid)  # скачает модель, если её ещё нет
+
+    def apply_theme(self):
+        theme.apply_palette(QApplication.instance(), settings.get("theme", "dark"))
+        self._px = None
+        self.setStyleSheet(theme.build_style(getattr(self, "_cur_px", 13), settings.get("theme", "dark")))
+
+    def on_engine_error(self, msg):
+        self.on_error(msg)
+        self._status_key = "choose_model_status"
+        self.status.setText(tr("choose_model_status"))
 
     def _picker(self, lay, slot):
         row = QHBoxLayout()
@@ -178,7 +233,7 @@ class MainWindow(QMainWindow):
         return btn, lbl
 
     def retranslate(self):
-        self.lang_lbl.setText(tr("language") + ":")
+        self.settings_btn.setText("⚙ " + tr("settings"))
         self.src_btn.setText(tr("src_btn"))
         self.dst_btn.setText(tr("dst_btn"))
         self.src_lbl.setText(str(self.src) if self.src else tr("not_chosen"))
@@ -198,7 +253,8 @@ class MainWindow(QMainWindow):
         self.retranslate()
 
     def threshold(self) -> float:
-        return 0.98 - self.sens.value() * 0.0018  # 0 -> 0.98 (strict), 100 -> 0.80 (soft)
+        shift = MODELS[self.model_id].threshold_shift if getattr(self, "model_id", None) in MODELS else 0.0
+        return 0.98 - self.sens.value() * 0.0018 + shift  # 0 -> 0.98 (strict), 100 -> 0.80 (soft)
 
     def _sens_changed(self, v: int):
         self.sens_hint.setText(tr("sens_low" if v < 25 else "sens_mid" if v < 60 else "sens_high"))
@@ -229,12 +285,12 @@ class MainWindow(QMainWindow):
 
     def on_model(self, model):
         self.model = model
-        self._status_key = "ready"
-        self.status.setText(tr("ready"))
-        self._refresh()
+        self._status_key = None
+        self.status.setText(tr("ready_dev", dev=model.device_name))
+        self._busy(False)
 
     def _busy(self, busy: bool):
-        for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start):
+        for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start, self.settings_btn):
             x.setEnabled(not busy)
         if not busy:
             self._refresh()
@@ -275,8 +331,8 @@ class MainWindow(QMainWindow):
         # the interface scales together with the window
         px = int(max(13, min(30, 13 * self.width() / 560)))
         if px != getattr(self, "_px", None):
-            self._px = px
-            self.setStyleSheet(build_style(px))
+            self._px = self._cur_px = px
+            self.setStyleSheet(theme.build_style(px, settings.get("theme", "dark")))
         super().resizeEvent(e)
 
     def closeEvent(self, e):
