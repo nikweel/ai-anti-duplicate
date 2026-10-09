@@ -3,7 +3,8 @@ name = "ai-anti-duplicate"
 version = "0.1.0"
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "onnxruntime>=1.18",
+    "onnxruntime>=1.18,<1.20; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "onnxruntime>=1.18; sys_platform != 'darwin' or platform_machine != 'x86_64'",
     "pillow>=10.0",
     "numpy>=1.26",
     "PySide6-Essentials>=6.6",
