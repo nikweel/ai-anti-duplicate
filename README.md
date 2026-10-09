@@ -1,29 +1,46 @@
 # AI Anti-Duplicate
 
-Находит дубликаты фотографий **по содержимому** (ИИ-модель CLIP), а не по размеру, дате или md5. Видит одинаковые кадры при другом разрешении, сжатии и повороте. Программа **только копирует** файлы, ничего не удаляет и не перемещает.
+**English** · [Русский](README.ru.md)
 
-1. Укажите папку с фото и папку для уникальных.
-2. Выберите правило для дублей: самый новый / самый тяжёлый / самый большой по разрешению / вручную.
-3. Нажмите «Найти дубликаты и сохранить»: в целевую папку попадут все фото без дублей и по одному лучшему из каждой группы дублей.
+Free, open-source tool that finds duplicate photos by **what is in the picture**, not by file size, date or hash.
+It uses the CLIP AI model, so it recognises the same shot even if it was resized, re-compressed, cropped a little or rotated.
 
-## Скачать
-Готовые программы — на странице [Releases](https://github.com/nikweel/ai-anti-duplicate/releases) (двойной клик, без установки Python):
+> 🛡️ **Safe by design:** the app only *copies* files. It never deletes, moves or changes your originals.
 
-| ОС | Файл |
-|---|---|
-| Windows | `AI-Anti-Duplicate-…-Setup.exe` |
-| Linux | `.AppImage` (сделать исполняемым) или `.deb` (двойной клик → установка) |
-| macOS | `.dmg` (перетащить в «Программы»; при блокировке: правый клик → «Открыть») |
+## How it works
+1. Choose the folder with your photos.
+2. Choose the folder where unique photos will be saved.
+3. Pick a rule for duplicates: **newest**, **largest file**, **highest resolution**, or **choose manually** for every shot (click any picture to enlarge it).
+4. Press **Find duplicates and save**. You get every photo that has no duplicates, plus the best copy from each group of duplicates.
 
-При первом запуске программа сама скачивает модель (168 МБ), дальше работает офлайн.
+The **Sensitivity** slider controls how similar two photos must be: *Strict* finds only near-identical files, *Soft* also finds similar shots from the same scene.
 
-## Запуск из исходников (портативно, без ручной установки)
-`start.cmd` (Windows) / `start.command` (macOS) / `start.sh` (Linux). Первый запуск сам скачает Python и зависимости в папку `runtime/`. Linux: двойной клик по `AI-Anti-Duplicate.desktop` после «Разрешить запуск».
+## Download (no installation of Python needed)
+Get the file for your system from the [**Releases**](https://github.com/nikweel/ai-anti-duplicate/releases/latest) page:
 
-## Разработка
-Модель: `scripts/export_onnx.py` + `scripts/shrink_onnx.py`. Сборка: `pyinstaller packaging.spec`, пакеты — `packaging/`, CI — `.github/workflows/build.yml` (тег `app-v*`).
+| System | File | How to run |
+|---|---|---|
+| **Windows** | `…-Setup.exe` | Double-click, follow the installer. |
+| **Linux (any)** | `….AppImage` | Right-click → Properties → *Allow executing as program*, then double-click. Or in a terminal: `chmod +x *.AppImage && ./*.AppImage` |
+| **Linux (Ubuntu/Debian)** | `….deb` | Double-click → *Install*. The app appears in your menu. |
+| **macOS** | `….dmg` | Open, drag the app to *Applications*. First launch: right-click → *Open* (the app is not signed). |
 
-Лицензия MIT.
+On the first launch the app downloads the AI model once (168 MB, needs internet). After that it works fully offline.
 
-## Автор
-Николай Федотов — [tech-crm.ru](https://tech-crm.ru/) · [VK](https://vk.ru/id191178167) · [MAX](https://max.ru/u/f9LHodD0cOInyBtQrxPp6Z1O_g2V8Ck-1hzBxWg_l9EN48ubud67NUWeyTM) · [GitHub](https://github.com/nikweel)
+## Run from source (portable, no manual setup)
+Download the repository and double-click `start.cmd` (Windows), `start.command` (macOS) or `start.sh` (Linux).
+The first run downloads Python and all dependencies into the local `runtime/` folder automatically.
+
+## Development
+- Model export: `scripts/export_onnx.py`, `scripts/shrink_onnx.py` (PyTorch → ONNX, fp16 weights; the result matches the original to within 0.0001 similarity).
+- Build: `pyinstaller packaging.spec`; packages: `packaging/`; CI: `.github/workflows/build.yml` (push a tag `app-v*`).
+- Tests: `pytest`.
+
+Pull requests and ideas are welcome!
+
+## License
+[MIT](LICENSE) — free for any use, including commercial. Do whatever you like, just keep the copyright notice.
+The CLIP model is by OpenAI (MIT).
+
+## Author
+Nikolay Fedotov — [tech-crm.ru](https://tech-crm.ru/) · [VK](https://vk.ru/id191178167) · [MAX](https://max.ru/u/f9LHodD0cOInyBtQrxPp6Z1O_g2V8Ck-1hzBxWg_l9EN48ubud67NUWeyTM) · [GitHub](https://github.com/nikweel)

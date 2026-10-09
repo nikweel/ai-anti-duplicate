@@ -1,15 +1,17 @@
-"""Экспорт визуальной части CLIP в ONNX (запускается разработчиком, не пользователем)."""
+"""Экспорт визуальной части CLIP в ONNX (запускается разработчиком, не пользователем).
+
+Использование: export_onnx.py <репозиторий sentence-transformers> <файл.onnx>
+Пример: export_onnx.py sentence-transformers/clip-ViT-L-14 models/clip_vit_l14.onnx
+"""
 import sys
-from pathlib import Path
 
 import torch
+from sentence_transformers import SentenceTransformer
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from app.core.model_manager import load_model  # noqa: E402
-
-out = Path(sys.argv[1] if len(sys.argv) > 1 else "models/clip_vision.onnx")
-st = load_model()
-clip = st[0].model.eval().cpu()
+repo = sys.argv[1] if len(sys.argv) > 1 else "sentence-transformers/clip-ViT-B-32"
+out = sys.argv[2] if len(sys.argv) > 2 else "models/clip_vision.onnx"
+st = SentenceTransformer(repo, device="cpu")
+clip = st[0].model.eval()
 
 
 class Vision(torch.nn.Module):
@@ -22,8 +24,8 @@ class Vision(torch.nn.Module):
         return self.m.visual_projection(pooled)
 
 
-dummy = torch.randn(2, 3, 224, 224)
-torch.onnx.export(Vision(clip), (dummy,), str(out), input_names=["pixel_values"], output_names=["emb"],
+size = clip.config.vision_config.image_size
+dummy = torch.randn(2, 3, size, size)
+torch.onnx.export(Vision(clip), (dummy,), out, input_names=["pixel_values"], output_names=["emb"],
                   dynamic_axes={"pixel_values": {0: "b"}, "emb": {0: "b"}}, opset_version=17, dynamo=False)
-print("saved", out, out.stat().st_size // 2**20, "MB")
-print(st[0].processor)
+print("saved", out, "image_size", size)
