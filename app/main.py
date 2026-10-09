@@ -7,6 +7,10 @@ from .utils.logging_setup import setup_logging
 
 def main() -> int:
     setup_logging()
+    if len(sys.argv) > 1 and sys.argv[1] == "--cli":
+        from .cli import main as cli_main
+
+        return cli_main(sys.argv[2:])
     try:
         from PySide6.QtWidgets import QApplication
 
