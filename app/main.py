@@ -12,6 +12,9 @@ def main() -> int:
         from .gui.main_window import MainWindow
 
         app = QApplication(sys.argv)
+        app.setApplicationName("AI Anti-Duplicate")
+        app.setDesktopFileName("ai-anti-duplicate")
+        app.setStyle("Fusion")
         win = MainWindow()
         win.show()
         return app.exec()

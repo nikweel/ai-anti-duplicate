@@ -6,3 +6,6 @@ __pycache__/
 .claude/
 .pytest_cache/
 AI-Anti-Duplicate.desktop
+dist/
+build/
+release/

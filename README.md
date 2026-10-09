@@ -1,7 +1,29 @@
-# AI Anti-Duplicate (Lite)
-Запуск: двойной клик по `start.cmd` (Windows), `start.command` (macOS) или `start.sh` (Linux).
-Первый запуск сам скачивает Python, библиотеки и модель CLIP (~2 ГБ, нужен интернет) в папки `runtime/` и `models/`. Дальше работает офлайн.
-Linux: если файл не запускается по клику — `chmod +x start.sh`. macOS: при блокировке — `xattr -dr com.apple.quarantine .`
+# AI Anti-Duplicate
+
+Находит дубликаты фотографий **по содержимому** (ИИ-модель CLIP), а не по размеру, дате или md5. Видит одинаковые кадры при другом разрешении, сжатии и повороте. Программа **только копирует** файлы, ничего не удаляет и не перемещает.
+
+1. Укажите папку с фото и папку для уникальных.
+2. Выберите правило для дублей: самый новый / самый тяжёлый / самый большой по разрешению / вручную.
+3. Нажмите «Найти дубликаты и сохранить»: в целевую папку попадут все фото без дублей и по одному лучшему из каждой группы дублей.
+
+## Скачать
+Готовые программы — на странице [Releases](https://github.com/nikweel/ai-anti-duplicate/releases) (двойной клик, без установки Python):
+
+| ОС | Файл |
+|---|---|
+| Windows | `AI-Anti-Duplicate-…-Setup.exe` |
+| Linux | `.AppImage` (сделать исполняемым) или `.deb` (двойной клик → установка) |
+| macOS | `.dmg` (перетащить в «Программы»; при блокировке: правый клик → «Открыть») |
+
+При первом запуске программа сама скачивает модель (168 МБ), дальше работает офлайн.
+
+## Запуск из исходников (портативно, без ручной установки)
+`start.cmd` (Windows) / `start.command` (macOS) / `start.sh` (Linux). Первый запуск сам скачает Python и зависимости в папку `runtime/`. Linux: двойной клик по `AI-Anti-Duplicate.desktop` после «Разрешить запуск».
+
+## Разработка
+Модель: `scripts/export_onnx.py` + `scripts/shrink_onnx.py`. Сборка: `pyinstaller packaging.spec`, пакеты — `packaging/`, CI — `.github/workflows/build.yml` (тег `app-v*`).
+
+Лицензия MIT.
 
 ## Автор
 Николай Федотов — [tech-crm.ru](https://tech-crm.ru/) · [VK](https://vk.ru/id191178167) · [MAX](https://max.ru/u/f9LHodD0cOInyBtQrxPp6Z1O_g2V8Ck-1hzBxWg_l9EN48ubud67NUWeyTM) · [GitHub](https://github.com/nikweel)

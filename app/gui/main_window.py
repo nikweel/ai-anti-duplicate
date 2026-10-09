@@ -1,15 +1,17 @@
 from pathlib import Path
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QGuiApplication, QPixmap
+from PySide6.QtGui import QGuiApplication, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QButtonGroup, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
     QPushButton, QRadioButton, QSlider, QVBoxLayout, QWidget,
 )
 
+from ..utils.paths import ICON
 from ..data.models import DuplicateGroup
 from ..services.exporter import export_unique
 from ..services.selection import RULES, pick_newest
+from .style import build_style
 from .workers import ModelWorker, ScanWorker
 
 
@@ -84,6 +86,7 @@ class ReviewDialog(QDialog):
         cancel.clicked.connect(self.reject)
         ok.clicked.connect(self._accept)
         ok.setDefault(True)
+        ok.setObjectName("primary")
         btns.addStretch()
         btns.addWidget(cancel)
         btns.addWidget(ok)
@@ -99,6 +102,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("AI Anti-Duplicate")
         self.setMinimumWidth(520)
+        self.setWindowIcon(QIcon(str(ICON)))
         self.model = None
         self.src: Path | None = None
         self.dst: Path | None = None
@@ -107,6 +111,8 @@ class MainWindow(QMainWindow):
         w = QWidget()
         self.setCentralWidget(w)
         lay = QVBoxLayout(w)
+        lay.setContentsMargins(24, 20, 24, 20)
+        lay.setSpacing(12)
         self.src_btn, self.src_lbl = self._picker(lay, "Папка с фотографиями", self.pick_src)
         self.dst_btn, self.dst_lbl = self._picker(lay, "Папка для уникальных", self.pick_dst)
         self.rule = QComboBox()
@@ -127,6 +133,7 @@ class MainWindow(QMainWindow):
         lay.addWidget(self.sens_hint)
         self._sens_changed(33)
         self.start = QPushButton("Найти дубликаты и сохранить")
+        self.start.setObjectName("primary")
         self.start.setEnabled(False)
         self.start.clicked.connect(self.run)
         self.bar = QProgressBar()
@@ -235,7 +242,7 @@ class MainWindow(QMainWindow):
         px = int(max(13, min(30, 13 * self.width() / 560)))
         if px != getattr(self, "_px", None):
             self._px = px
-            self.setStyleSheet(f"* {{ font-size: {px}px; }} QPushButton {{ padding: {px // 3}px {px // 2}px; }}")
+            self.setStyleSheet(build_style(px))
         super().resizeEvent(e)
 
     def closeEvent(self, e):

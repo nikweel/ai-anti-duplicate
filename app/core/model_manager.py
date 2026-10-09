@@ -49,9 +49,16 @@ def _download(progress: Progress) -> None:
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     tmp = MODEL_FILE.with_suffix(".part")
 
+    last = [-1]
+
     def hook(blocks, bs, total):
-        if total > 0:
-            progress(min(1.0, blocks * bs / total), f"Загрузка модели: {min(blocks * bs, total) / 1e6:.0f}/{total / 1e6:.0f} МБ")
+        if total <= 0:
+            return
+        done = min(blocks * bs, total)
+        pct = int(done * 100 / total)
+        if pct != last[0]:  # не чаще одного раза на процент
+            last[0] = pct
+            progress(pct / 100, f"Загрузка модели: {done / 1e6:.0f}/{total / 1e6:.0f} МБ")
 
     urllib.request.urlretrieve(MODEL_URL, tmp, hook)
     tmp.replace(MODEL_FILE)
