@@ -13,6 +13,8 @@ It uses the CLIP AI model, so it recognises the same shot even if it was resized
 3. Pick a rule for duplicates: **newest**, **largest file**, **highest resolution**, or **choose manually** for every shot (click any picture to enlarge it).
 4. Press **Find duplicates and save**. You get every photo that has no duplicates, plus the best copy from each group of duplicates.
 
+The interface is dark and available in English and Russian (language switcher in the top-right corner).
+
 The **Sensitivity** slider controls how similar two photos must be: *Strict* finds only near-identical files, *Soft* also finds similar shots from the same scene.
 
 ## Download (no installation of Python needed)

@@ -3,6 +3,7 @@ from pathlib import Path
 
 from PySide6.QtCore import QThread, Signal
 
+from ..i18n import tr
 from ..core.clustering import cluster
 from ..core.embedder import embed_images
 from ..core.model_manager import load_model
@@ -23,7 +24,7 @@ class ModelWorker(QThread):
             self.loaded.emit(load_model(lambda f, m: self.progress.emit(f, m)))
         except Exception as e:
             log.exception("Ошибка загрузки модели")
-            self.failed.emit(f"Не удалось загрузить модель (проверьте интернет): {e}")
+            self.failed.emit(tr("model_fail", e=e))
 
 
 class ScanWorker(QThread):
@@ -38,14 +39,14 @@ class ScanWorker(QThread):
 
     def run(self):
         try:
-            self.progress.emit(0, "Поиск файлов...")
+            self.progress.emit(0, tr("scanning"))
             infos = [i for i in scan_folder(self.folder, self.isInterruptionRequested) if not i.path.is_relative_to(self.exclude)]
             kept, emb = embed_images(
                 self.model, infos, self.rotations,
-                progress=lambda d, t: self.progress.emit(d / max(t, 1), f"Анализ: {d}/{t}"),
+                progress=lambda d, t: self.progress.emit(d / max(t, 1), tr("analysis", d=d, t=t)),
                 should_stop=self.isInterruptionRequested,
             )
-            self.progress.emit(1, "Группировка...")
+            self.progress.emit(1, tr("grouping"))
             groups = []
             for idx in cluster(emb, self.threshold):
                 g = DuplicateGroup([kept[i] for i in idx])

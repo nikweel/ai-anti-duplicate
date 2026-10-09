@@ -23,9 +23,9 @@ def pick_resolution(g: DuplicateGroup) -> int:
     return max(range(len(g.images)), key=lambda i: (_pixels(g.images[i].path), g.images[i].size))
 
 
-RULES = {
-    "Оставлять самый новый": pick_newest,
-    "Оставлять самый тяжёлый (вес файла)": pick_largest,
-    "Оставлять самый большой по разрешению": pick_resolution,
-    "Выбирать вручную для каждого кадра": None,
+RULES = {  # id -> функция выбора (None = вручную)
+    "newest": pick_newest,
+    "largest": pick_largest,
+    "resolution": pick_resolution,
+    "manual": None,
 }

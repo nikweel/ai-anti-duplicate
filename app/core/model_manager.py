@@ -5,6 +5,7 @@ from collections.abc import Callable
 import numpy as np
 from PIL import Image
 
+from ..i18n import tr
 from ..utils.paths import MODELS_DIR
 
 log = logging.getLogger(__name__)
@@ -58,7 +59,7 @@ def _download(progress: Progress) -> None:
         pct = int(done * 100 / total)
         if pct != last[0]:  # не чаще одного раза на процент
             last[0] = pct
-            progress(pct / 100, f"Загрузка модели: {done / 1e6:.0f}/{total / 1e6:.0f} МБ")
+            progress(pct / 100, tr("model_dl", d=f"{done / 1e6:.0f}", t=f"{total / 1e6:.0f}"))
 
     urllib.request.urlretrieve(MODEL_URL, tmp, hook)
     tmp.replace(MODEL_FILE)
@@ -69,5 +70,5 @@ def load_model(progress: Progress = lambda f, m: None) -> ClipOnnx:
         if not MODEL_URL:
             raise FileNotFoundError(f"Не найден файл модели {MODEL_FILE}")
         _download(progress)
-    progress(1.0, "Загрузка модели в память...")
+    progress(1.0, tr("model_mem"))
     return ClipOnnx(MODEL_FILE)
