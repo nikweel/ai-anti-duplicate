@@ -7,6 +7,13 @@ It uses the CLIP AI model, so it recognises the same shot even if it was resized
 
 > 🛡️ **Safe by design:** the app only *copies* files. It never deletes, moves or changes your originals.
 
+## Screenshots
+*(demo with generated pictures: three scenes each have copies — an edited small one and a rotated one — and two scenes are unique)*
+
+![Main window](docs/screenshots/main.png)
+![Choosing which duplicate to keep](docs/screenshots/review.png)
+![Settings](docs/screenshots/settings.png)
+
 ## How it works
 1. Choose the folder with your photos.
 2. Choose the folder where unique photos will be saved.
