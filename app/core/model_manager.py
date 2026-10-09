@@ -10,7 +10,7 @@ from ..utils.paths import MODELS_DIR
 log = logging.getLogger(__name__)
 MODEL_FILE = MODELS_DIR / "clip_vision.onnx"
 # Адрес, откуда модель скачивается при первом запуске, если файла нет (задаётся при публикации).
-MODEL_URL = ""
+MODEL_URL = "https://github.com/nikweel/ai-anti-duplicate/releases/download/v0.1/clip_vision.onnx"
 Progress = Callable[[float, str], None]
 
 _MEAN = np.array([0.48145466, 0.4578275, 0.40821073], np.float32)
