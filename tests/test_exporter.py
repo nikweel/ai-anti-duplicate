@@ -23,6 +23,13 @@ def test_rerun_is_idempotent_and_never_touches_sources(tmp_path):
 
 def test_group_keeps_chosen_only(tmp_path):
     a, b = _img(tmp_path / "s/a.jpg", b"1"), _img(tmp_path / "s/b.jpg", b"22")
-    g = DuplicateGroup([a, b], keep=1)
+    g = DuplicateGroup([a, b], keep=[1])
     export_unique(tmp_path / "o", [g], [a, b])
     assert [p.name for p in (tmp_path / "o").iterdir()] == ["b.jpg"]
+
+
+def test_several_kept_from_one_group(tmp_path):
+    a, b, c = _img(tmp_path / "s/a.jpg", b"1"), _img(tmp_path / "s/b.jpg", b"22"), _img(tmp_path / "s/c.jpg", b"333")
+    g = DuplicateGroup([a, b, c], keep=[0, 2])
+    export_unique(tmp_path / "o", [g], [a, b, c])
+    assert sorted(p.name for p in (tmp_path / "o").iterdir()) == ["a.jpg", "c.jpg"]

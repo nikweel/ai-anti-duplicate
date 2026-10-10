@@ -38,10 +38,10 @@ def main(argv: list[str]) -> int:
     groups = []
     for idx in cluster(emb, thr):
         g = DuplicateGroup([kept[i] for i in idx])
-        g.keep = RULES[a.rule](g)
+        g.keep = [RULES[a.rule](g)]
         groups.append(g)
     n = export_unique(a.dst, groups, kept, NamingOptions(a.names, a.date_source, a.date_format, a.date_custom, a.conflict))
     print(f"images={len(kept)} groups={len(groups)} copied={n} threshold={thr:.3f}")
     for g in groups:
-        print("GROUP", [i.path.name for i in g.images], "-> keep", g.images[g.keep].path.name)
+        print("GROUP", [i.path.name for i in g.images], "-> keep", [g.images[i].path.name for i in g.keep])
     return 0

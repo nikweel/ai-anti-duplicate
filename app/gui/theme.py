@@ -1,4 +1,8 @@
 from PySide6.QtGui import QColor, QGuiApplication, QPalette
+
+from ..utils.paths import RESOURCES
+
+CHECK = (RESOURCES / "assets" / "check.svg").as_posix()
 from PySide6.QtCore import Qt
 
 COLORS = {
@@ -63,7 +67,7 @@ QSlider::handle:horizontal {{ width: {h}px; height: {h}px; margin: -{(h - 6) // 
 QRadioButton::indicator {{ width: {px}px; height: {px}px; border-radius: {px // 2 + 1}px; border: 2px solid {c['muted']}; background: {c['panel']}; }}
 QRadioButton::indicator:checked {{ background: {c['accent']}; border-color: {c['accent']}; }}
 QCheckBox::indicator {{ width: {px}px; height: {px}px; border-radius: 4px; border: 2px solid {c['muted']}; background: {c['panel']}; }}
-QCheckBox::indicator:checked {{ background: {c['accent']}; border-color: {c['accent']}; }}
+QCheckBox::indicator:checked {{ background: {c['accent']}; border-color: {c['accent']}; image: url({CHECK}); }}
 QGroupBox {{ color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; margin-top: {px}px; padding: {px}px {px // 2}px {px // 2}px; }}
 QGroupBox::title {{ subcontrol-origin: margin; left: {px}px; padding: 0 4px; }}
 QLineEdit {{ background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; padding: {px // 3}px {px // 2}px; }}

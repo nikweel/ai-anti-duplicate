@@ -12,5 +12,5 @@ class ImageInfo:
 @dataclass
 class DuplicateGroup:
     images: list[ImageInfo]
-    keep: int = 0  # индекс сохраняемого файла
+    keep: list[int] = field(default_factory=lambda: [0])  # индексы сохраняемых файлов (можно несколько)
     members: list[int] = field(default_factory=list)

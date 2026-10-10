@@ -21,7 +21,7 @@ def export_unique(
     out_dir.mkdir(parents=True, exist_ok=True)
     grouped = {i.path for g in groups for i in g.images}
     to_copy = [i.path for i in all_images if i.path not in grouped]
-    to_copy += [g.images[g.keep].path for g in groups]
+    to_copy += [g.images[i].path for g in groups for i in g.keep]
     rows = []
     for src in to_copy:
         dst, need_copy = resolve(out_dir, src, naming)

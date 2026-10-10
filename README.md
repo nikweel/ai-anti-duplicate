@@ -17,12 +17,19 @@ It uses the CLIP AI model, so it recognises the same shot even if it was resized
 ## How it works
 1. Choose the folder with your photos.
 2. Choose the folder where unique photos will be saved.
-3. Pick a rule for duplicates: **newest**, **largest file**, **highest resolution**, or **choose manually** for every shot (click any picture to enlarge it).
+3. Pick a rule for duplicates: **newest**, **largest file**, **highest resolution**, or **choose manually** for every shot (tick one or several files to keep; hover a photo to enlarge it).
 4. Press **Find duplicates and save**. You get every photo that has no duplicates, plus the best copy from each group of duplicates.
 
 The interface is dark and available in English and Russian (language switcher in the top-right corner).
 
 The **Sensitivity** slider controls how similar two photos must be: *Strict* finds only near-identical files, *Soft* also finds similar shots from the same scene.
+
+## Reviewing duplicates manually
+Choose **"Choose manually for each shot"** and the app shows every group of duplicates in a window:
+- All checkboxes start **unticked**: tick **every file you want to save** (one, several or all of them). Useful when a pair was matched by mistake, e.g. the same pose with a different facial expression.
+- **Click a photo** (or its checkbox) to select it; a blue frame marks selected photos.
+- **Hover a photo** to see it enlarged, with its name, resolution and size.
+- *Select all* / *Clear* buttons, and the *Save selected* button stays disabled until you tick at least one file.
 
 ## File names when copying
 The program searches **all subfolders** (can be switched off with *Search in subfolders*) and **never overwrites or loses a file**. Configure everything before you press the button:

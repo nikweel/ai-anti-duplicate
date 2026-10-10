@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from PySide6.QtCore import QTimer, Qt, Signal
-from PySide6.QtGui import QGuiApplication, QIcon, QPixmap
+from PySide6.QtCore import QSize, QTimer, Qt, Signal
+from PySide6.QtGui import QGuiApplication, QIcon, QImageReader, QPainter, QPalette, QPen, QPixmap
 from PySide6.QtWidgets import (
-    QApplication, QButtonGroup, QFrame, QScrollArea, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
+    QApplication, QFrame, QGridLayout, QScrollArea, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
     QPushButton, QRadioButton, QSlider, QVBoxLayout, QWidget,
 )
 
@@ -23,85 +23,155 @@ from .settings_dialog import SettingsDialog
 from .workers import ModelWorker, ScanWorker
 
 
+def load_pixmap(path, max_side: int) -> QPixmap:
+    """Читает картинку сразу уменьшенной (экономит память) и с учётом EXIF-поворота."""
+    r = QImageReader(str(path))
+    r.setAutoTransform(True)
+    size = r.size()
+    if size.isValid() and max(size.width(), size.height()) > max_side:
+        size.scale(max_side, max_side, Qt.KeepAspectRatio)
+        r.setScaledSize(size)
+    return QPixmap.fromImage(r.read())
+
+
+class HoverPreview(QFrame):
+    """Крупный предпросмотр при наведении: не перехватывает мышь, исчезает при уходе курсора."""
+
+    def __init__(self):
+        super().__init__(None, Qt.ToolTip | Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_ShowWithoutActivating)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.setStyleSheet("HoverPreview { background: #0d0f14; border: 2px solid #3d73f0; } QLabel { color: #e6e9ef; background: transparent; }")
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(8, 8, 8, 8)
+        self.pic, self.cap = QLabel(), QLabel()
+        self.pic.setAlignment(Qt.AlignCenter)
+        self.cap.setAlignment(Qt.AlignCenter)
+        lay.addWidget(self.pic)
+        lay.addWidget(self.cap)
+
+    def show_for(self, img, anchor: QWidget):
+        screen = anchor.screen().availableGeometry()
+        side = int(min(screen.width(), screen.height()) * 0.78)
+        pm = load_pixmap(img.path, side)
+        self.pic.setPixmap(pm)
+        self.cap.setText(f"{img.path.name} — {pm.width()}×{pm.height()}, {img.size / 1024:.0f} {tr('kb')}")
+        self.adjustSize()
+        self.move(screen.center().x() - self.width() // 2, screen.center().y() - self.height() // 2)
+        self.show()
+        self.raise_()
+
+
 class ScaledImage(QLabel):
-    """Картинка, которая подстраивается под размер виджета; клик по ней -> clicked."""
+    """Миниатюра: клик = переключить выбор, наведение = крупный предпросмотр, рамка у выбранной."""
 
-    clicked = Signal()
+    toggled = Signal()
 
-    def __init__(self, path, min_size=120):
+    def __init__(self, img, min_size=120):
         super().__init__()
-        self._pm = QPixmap(str(path))
+        self.img = img
+        self.selected = False
+        self._pm = load_pixmap(img.path, 900)
+        self._preview = HoverPreview()
+        self._timer = QTimer(self)
+        self._timer.setSingleShot(True)
+        self._timer.timeout.connect(lambda: self._preview.show_for(self.img, self))
         self.setMinimumSize(min_size, min_size)
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.setAlignment(Qt.AlignCenter)
         self.setCursor(Qt.PointingHandCursor)
 
+    def set_selected(self, v: bool):
+        self.selected = v
+        self.update()
+
     def resizeEvent(self, e):
         if not self._pm.isNull():
-            self.setPixmap(self._pm.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            self.setPixmap(self._pm.scaled(self.size() - QSize(12, 12), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         super().resizeEvent(e)
 
+    def paintEvent(self, e):
+        super().paintEvent(e)
+        if self.selected:
+            p = QPainter(self)
+            pen = QPen(self.palette().color(QPalette.Highlight), 5)
+            p.setPen(pen)
+            p.drawRoundedRect(self.rect().adjusted(3, 3, -3, -3), 8, 8)
+
     def mousePressEvent(self, e):
-        self.clicked.emit()
+        self._timer.stop()
+        self._preview.hide()
+        self.toggled.emit()
 
+    def enterEvent(self, e):
+        self._timer.start(250)  # небольшая задержка, чтобы превью не мелькало при движении мыши
+        super().enterEvent(e)
 
-class PreviewPopup(QDialog):
-    """Крупный предпросмотр; закрывается кликом в любое место вне окна (или по картинке)."""
+    def leaveEvent(self, e):
+        self._timer.stop()
+        self._preview.hide()
+        super().leaveEvent(e)
 
-    def __init__(self, img, parent):
-        super().__init__(parent, Qt.Popup)
-        screen = (parent.screen() if parent else QGuiApplication.primaryScreen()).availableGeometry()
-        w, h = int(screen.width() * 0.8), int(screen.height() * 0.85)
-        self.resize(w, h)
-        self.move(screen.center().x() - w // 2, screen.center().y() - h // 2)
-        lay = QVBoxLayout(self)
-        pic = ScaledImage(img.path, 200)
-        pic.setCursor(Qt.ArrowCursor)
-        pic.clicked.connect(self.close)
-        px = QPixmap(str(img.path))
-        cap = QLabel(f"{img.path.name} — {px.width()}×{px.height()}, {img.size / 1024:.0f} {tr('kb')}")
-        cap.setAlignment(Qt.AlignCenter)
-        lay.addWidget(pic, 1)
-        lay.addWidget(cap)
+    def hideEvent(self, e):
+        self._preview.hide()
+        super().hideEvent(e)
 
 
 class ReviewDialog(QDialog):
-    """Duplicates of one shot: choose which file to keep."""
+    """Дубли одного кадра: отмечаем галочками все файлы, которые нужно сохранить (можно несколько)."""
 
     def __init__(self, group: DuplicateGroup, n: int, total: int, parent=None):
         super().__init__(parent)
         self.setWindowTitle(tr("review_title", n=n, t=total))
         self.group = group
         self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
-        self.resize(1000, 600)
+        self.resize(1100, 650)
         lay = QVBoxLayout(self)
         lay.addWidget(QLabel(tr("review_hint")))
-        row = QHBoxLayout()
-        self.buttons = QButtonGroup(self)
+        grid = QGridLayout()
+        cols = min(len(group.images), 4)
+        self.boxes: list[QCheckBox] = []
+        self.pics: list[ScaledImage] = []
         for i, img in enumerate(group.images):
+            pic = ScaledImage(img)
+            cb = QCheckBox(f"{img.path.name}\n{img.size / 1024:.0f} {tr('kb')} · {pic._pm.width()}×{pic._pm.height()}")
+            cb.toggled.connect(pic.set_selected)
+            cb.toggled.connect(self._update_ok)
+            pic.toggled.connect(cb.toggle)
+            self.boxes.append(cb)
+            self.pics.append(pic)
             col = QVBoxLayout()
-            pic = ScaledImage(img.path)
-            pic.clicked.connect(lambda img=img: PreviewPopup(img, self).exec())
-            rb = QRadioButton(f"{img.path.name}\n{img.size / 1024:.0f} {tr('kb')}")
-            self.buttons.addButton(rb, i)
             col.addWidget(pic, 1)
-            col.addWidget(rb)
-            row.addLayout(col, 1)
-        lay.addLayout(row, 1)
-        self.buttons.button(group.keep).setChecked(True)
+            col.addWidget(cb)
+            grid.addLayout(col, i // cols, i % cols)
+        host = QWidget()
+        host.setLayout(grid)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setWidget(host)
+        lay.addWidget(scroll, 1)
         btns = QHBoxLayout()
-        cancel, ok = QPushButton(tr("cancel")), QPushButton(tr("keep"))
+        all_btn, none_btn = QPushButton(tr("select_all")), QPushButton(tr("select_none"))
+        all_btn.clicked.connect(lambda: [b.setChecked(True) for b in self.boxes])
+        none_btn.clicked.connect(lambda: [b.setChecked(False) for b in self.boxes])
+        cancel, self.ok = QPushButton(tr("cancel")), QPushButton(tr("keep"))
         cancel.clicked.connect(self.reject)
-        ok.clicked.connect(self._accept)
-        ok.setDefault(True)
-        ok.setObjectName("primary")
+        self.ok.clicked.connect(self._accept)
+        self.ok.setObjectName("primary")
+        self.ok.setEnabled(False)
+        btns.addWidget(all_btn)
+        btns.addWidget(none_btn)
         btns.addStretch()
         btns.addWidget(cancel)
-        btns.addWidget(ok)
+        btns.addWidget(self.ok)
         lay.addLayout(btns)
 
+    def _update_ok(self, *_):
+        self.ok.setEnabled(any(b.isChecked() for b in self.boxes))
+
     def _accept(self):
-        self.group.keep = self.buttons.checkedId()
+        self.group.keep = [i for i, b in enumerate(self.boxes) if b.isChecked()]
         self.accept()
 
 
@@ -166,8 +236,32 @@ class MainWindow(QMainWindow):
         for x in (self.start, self.bar, self.status):
             lay.addWidget(x)
         self.retranslate()
+        self._fit_to_content()
 
         QTimer.singleShot(0, self.start_up)
+
+    def _fit_to_content(self):
+        """Окно сразу вмещает всё содержимое без прокрутки (но не больше экрана)."""
+        self._fit_done = False
+        self.resize(720, 400)
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        if getattr(self, "_fit_done", True):
+            return
+        self._fit_done = True
+        QTimer.singleShot(0, self._fit_now)
+
+    def _fit_now(self):
+        sa = self.centralWidget()
+        avail = (self.screen() or QGuiApplication.primaryScreen()).availableGeometry()
+        for _ in range(4):  # шрифт зависит от ширины окна, поэтому подгоняем в несколько шагов
+            QApplication.processEvents()
+            need_h, need_w = sa.verticalScrollBar().maximum(), sa.horizontalScrollBar().maximum()
+            if need_h <= 0 and need_w <= 0:
+                break
+            self.resize(min(self.width() + need_w, int(avail.width() * 0.95)),
+                        min(self.height() + need_h, int(avail.height() * 0.95)))
 
     def current_model(self) -> str | None:
         """Выбранная модель; если не выбрана, берём любую уже скачанную."""
@@ -394,8 +488,9 @@ class MainWindow(QMainWindow):
     def _resolve(self, groups) -> bool:
         pick = RULES[self.rule.currentData()]
         for n, g in enumerate(groups, 1):
-            g.keep = (pick or pick_newest)(g)
-            if pick is None and ReviewDialog(g, n, len(groups), self).exec() != QDialog.Accepted:
+            if pick is not None:
+                g.keep = [pick(g)]
+            elif ReviewDialog(g, n, len(groups), self).exec() != QDialog.Accepted:
                 return False
         return True
 

@@ -54,7 +54,7 @@ class ScanWorker(QThread):
             groups = []
             for idx in cluster(emb, self.threshold):
                 g = DuplicateGroup([kept[i] for i in idx])
-                g.keep = pick_newest(g)
+                g.keep = [pick_newest(g)]
                 groups.append(g)
             self.done.emit(kept, groups)
         except Exception as e:
