@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · **Čeština** · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** je bezplatná open source aplikace, která hledá duplicitní **fotografie** (JPG, PNG, WebP) podle **toho, co je na snímku**, nikoli podle velikosti, data či otisku. Používá umělou inteligenci, takže pozná stejný záběr, i když byl zmenšen, znovu komprimován, mírně oříznut nebo otočen. Je určena jen pro sbírky fotografií, ne pro dokumenty, videa či jiné soubory.
+**Photo Duplicate Finder AI** je bezplatná open source aplikace, která hledá duplicitní **fotografie** (JPG, PNG, WebP + RAW) podle **toho, co je na snímku**, nikoli podle velikosti, data či otisku. Používá umělou inteligenci, takže pozná stejný záběr, i když byl zmenšen, znovu komprimován, mírně oříznut nebo otočen. Je určena jen pro sbírky fotografií, ne pro dokumenty, videa či jiné soubory.
 
 > 🛡️ **Bezpečná už z principu:** program pouze *kopíruje* soubory. Nikdy nemaže, nepřesouvá ani neupravuje vaše originály.
 

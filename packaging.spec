@@ -1,10 +1,16 @@
 # PyInstaller: pyinstaller packaging.spec
 import sys
 
+from PyInstaller.utils.hooks import collect_all
+
+raw_datas, raw_binaries, raw_hidden = collect_all("rawpy")
+
 a = Analysis(
     ["run_app.py"],
     pathex=["."],
-    datas=[("assets", "assets")],
+    datas=[("assets", "assets")] + raw_datas,
+    binaries=raw_binaries,
+    hiddenimports=raw_hidden,
     excludes=["tkinter", "PySide6.QtWebEngineCore", "PySide6.QtNetwork", "PySide6.QtQml", "PySide6.QtQuick",
               "PySide6.QtPdf", "PySide6.QtOpenGL", "torch", "matplotlib", "scipy", "pandas"],
 )

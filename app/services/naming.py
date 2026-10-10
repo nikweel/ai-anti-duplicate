@@ -36,17 +36,9 @@ class NamingOptions:
 
 
 def _exif_date(path: Path) -> datetime | None:
-    try:
-        from PIL import Image
+    from ..core.imageio import exif_datetime
 
-        with Image.open(path) as im:
-            ex = im.getexif()
-            raw = ex.get_ifd(0x8769).get(36867) or ex.get_ifd(0x8769).get(36868) or ex.get(306)
-        if raw:
-            return datetime.strptime(str(raw).strip()[:19], "%Y:%m:%d %H:%M:%S")
-    except Exception:
-        pass
-    return None
+    return exif_datetime(path)
 
 
 def file_date(path: Path, source: str) -> datetime:

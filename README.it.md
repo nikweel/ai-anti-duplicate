@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · **Italiano** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** è un'app gratuita e open source che trova le **foto** duplicate (JPG, PNG, WebP) in base a **ciò che mostra l'immagine**, non a dimensione, data o hash. Usa l'IA, quindi riconosce lo stesso scatto anche se ridotto, ricompresso, ritagliato un po' o ruotato. Serve solo per raccolte di foto, non per documenti, video o altri file.
+**Photo Duplicate Finder AI** è un'app gratuita e open source che trova le **foto** duplicate (JPG, PNG, WebP + RAW) in base a **ciò che mostra l'immagine**, non a dimensione, data o hash. Usa l'IA, quindi riconosce lo stesso scatto anche se ridotto, ricompresso, ritagliato un po' o ruotato. Serve solo per raccolte di foto, non per documenti, video o altri file.
 
 > 🛡️ **Sicuro per progetto:** il programma *copia* soltanto i file. Non cancella, non sposta e non modifica mai gli originali.
 

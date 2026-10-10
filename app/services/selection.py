@@ -10,11 +10,11 @@ def pick_largest(g: DuplicateGroup) -> int:
 
 
 def _pixels(path) -> int:
-    from PIL import Image
+    from ..core.imageio import image_size
 
     try:
-        with Image.open(path) as im:
-            return im.width * im.height
+        w, h = image_size(path)
+        return w * h
     except Exception:
         return 0
 

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import QSize, QTimer, Qt, Signal
-from PySide6.QtGui import QGuiApplication, QIcon, QImageReader, QPainter, QPalette, QPen, QPixmap
+from PySide6.QtGui import QGuiApplication, QIcon, QImage, QImageReader, QPainter, QPalette, QPen, QPixmap
 from PySide6.QtWidgets import (
     QApplication, QFrame, QGridLayout, QScrollArea, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
     QPushButton, QRadioButton, QSlider, QVBoxLayout, QWidget,
@@ -14,6 +14,7 @@ from ..services.naming import DATE_FORMATS, NamingOptions, format_date
 from datetime import datetime
 from PySide6.QtWidgets import QCheckBox, QGroupBox, QLineEdit
 from .. import i18n
+from ..core.imageio import image_size, is_raw, open_image
 from ..core.model_manager import DEFAULT_SENSITIVITY, LEGACY_IDS, MODELS, is_downloaded, threshold_for
 from ..utils import settings
 from ..i18n import tr
@@ -24,14 +25,31 @@ from .workers import ModelWorker, ScanWorker
 
 
 def load_pixmap(path, max_side: int) -> QPixmap:
-    """Читает картинку сразу уменьшенной (экономит память) и с учётом EXIF-поворота."""
-    r = QImageReader(str(path))
-    r.setAutoTransform(True)
-    size = r.size()
-    if size.isValid() and max(size.width(), size.height()) > max_side:
-        size.scale(max_side, max_side, Qt.KeepAspectRatio)
-        r.setScaledSize(size)
-    return QPixmap.fromImage(r.read())
+    """Картинка для показа (в том числе RAW), уже уменьшенная; с учётом EXIF-поворота."""
+    try:
+        if not is_raw(path):
+            r = QImageReader(str(path))
+            r.setAutoTransform(True)
+            size = r.size()
+            if size.isValid() and max(size.width(), size.height()) > max_side:
+                size.scale(max_side, max_side, Qt.KeepAspectRatio)
+                r.setScaledSize(size)
+            return QPixmap.fromImage(r.read())
+        im = open_image(path)
+        im.thumbnail((max_side, max_side))
+        data = im.tobytes("raw", "RGB")
+        return QPixmap.fromImage(QImage(data, im.width, im.height, im.width * 3, QImage.Format_RGB888).copy())
+    except Exception:
+        return QPixmap()
+
+
+def _dims(path) -> str:
+    """Реальное разрешение файла (а не размер миниатюры)."""
+    try:
+        w, h = image_size(path)
+        return f"{w}×{h}"
+    except Exception:
+        return "?"
 
 
 class HoverPreview(QFrame):
@@ -55,7 +73,7 @@ class HoverPreview(QFrame):
         side = int(min(screen.width(), screen.height()) * 0.78)
         pm = load_pixmap(img.path, side)
         self.pic.setPixmap(pm)
-        self.cap.setText(f"{img.path.name} — {pm.width()}×{pm.height()}, {img.size / 1024:.0f} {tr('kb')}")
+        self.cap.setText(f"{img.path.name} — {_dims(img.path)}, {img.size / 1024:.0f} {tr('kb')}")
         self.adjustSize()
         self.move(screen.center().x() - self.width() // 2, screen.center().y() - self.height() // 2)
         self.show()
@@ -142,7 +160,7 @@ class ReviewDialog(QDialog):
         self.pics: list[ScaledImage] = []
         for i, img in enumerate(group.images):
             pic = ScaledImage(img)
-            cb = QCheckBox(f"{img.path.name}\n{img.size / 1024:.0f} {tr('kb')} · {pic._pm.width()}×{pic._pm.height()}")
+            cb = QCheckBox(f"{img.path.name}\n{img.size / 1024:.0f} {tr('kb')} · {_dims(img.path)}")
             cb.toggled.connect(pic.set_selected)
             cb.toggled.connect(self._update_ok)
             pic.toggled.connect(cb.toggle)

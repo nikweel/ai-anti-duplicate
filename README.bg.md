@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · **Български** · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** е безплатно приложение с отворен код, което намира дублирани **снимки** (JPG, PNG, WebP) по **съдържанието на кадъра**, а не по размер, дата или хеш. Работи с изкуствен интелект и разпознава един и същи кадър, дори да е умалена, прекомпресиран, леко изрязан или завъртян. Предназначено е само за колекции от снимки, а не за документи, видео или други файлове.
+**Photo Duplicate Finder AI** е безплатно приложение с отворен код, което намира дублирани **снимки** (JPG, PNG, WebP + RAW) по **съдържанието на кадъра**, а не по размер, дата или хеш. Работи с изкуствен интелект и разпознава един и същи кадър, дори да е умалена, прекомпресиран, леко изрязан или завъртян. Предназначено е само за колекции от снимки, а не за документи, видео или други файлове.
 
 > 🛡️ **Безопасно по замисъл:** програмата само *копира* файлове. Никога не изтрива, не премества и не променя оригиналите ви.
 

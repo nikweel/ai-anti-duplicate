@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · **Hrvatski** · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** besplatna je aplikacija otvorenog koda koja pronalazi duplikate **fotografija** (JPG, PNG, WebP) prema **onome što je na slici**, a ne prema veličini, datumu ili hashu. Koristi umjetnu inteligenciju pa prepoznaje isti kadar čak i ako je smanjen, ponovno komprimiran, malo izrezan ili zakrenut. Namijenjena je samo zbirkama fotografija, a ne dokumentima, videozapisima ni drugim datotekama.
+**Photo Duplicate Finder AI** besplatna je aplikacija otvorenog koda koja pronalazi duplikate **fotografija** (JPG, PNG, WebP + RAW) prema **onome što je na slici**, a ne prema veličini, datumu ili hashu. Koristi umjetnu inteligenciju pa prepoznaje isti kadar čak i ako je smanjen, ponovno komprimiran, malo izrezan ili zakrenut. Namijenjena je samo zbirkama fotografija, a ne dokumentima, videozapisima ni drugim datotekama.
 
 > 🛡️ **Sigurno po dizajnu:** program samo *kopira* datoteke. Nikad ne briše, ne premješta i ne mijenja vaše izvornike.
 

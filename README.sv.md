@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · **Svenska** · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** är ett gratis program med öppen källkod som hittar dubbletter av **foton** (JPG, PNG, WebP) utifrån **vad som syns i bilden**, inte filstorlek, datum eller hash. Det använder AI och känner därför igen samma bild även om den förminskats, komprimerats om, beskurits lite eller roterats. Endast för fotosamlingar, inte för dokument, videor eller andra filer.
+**Photo Duplicate Finder AI** är ett gratis program med öppen källkod som hittar dubbletter av **foton** (JPG, PNG, WebP + RAW) utifrån **vad som syns i bilden**, inte filstorlek, datum eller hash. Det använder AI och känner därför igen samma bild även om den förminskats, komprimerats om, beskurits lite eller roterats. Endast för fotosamlingar, inte för dokument, videor eller andra filer.
 
 > 🛡️ **Säkert redan från grunden:** programmet *kopierar* bara filer. Det raderar, flyttar eller ändrar aldrig dina original.
 

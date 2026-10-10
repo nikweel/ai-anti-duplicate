@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · **Dansk** · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** er et gratis program med åben kildekode, der finder dubletter af **fotos** (JPG, PNG, WebP) ud fra **det, der er på billedet** — ikke filstørrelse, dato eller hash. Det bruger AI og genkender derfor samme optagelse, selv om den er formindsket, genkomprimeret, beskåret en smule eller roteret. Kun til fotosamlinger, ikke til dokumenter, videoer eller andre filer.
+**Photo Duplicate Finder AI** er et gratis program med åben kildekode, der finder dubletter af **fotos** (JPG, PNG, WebP + RAW) ud fra **det, der er på billedet** — ikke filstørrelse, dato eller hash. Det bruger AI og genkender derfor samme optagelse, selv om den er formindsket, genkomprimeret, beskåret en smule eller roteret. Kun til fotosamlinger, ikke til dokumenter, videoer eller andre filer.
 
 > 🛡️ **Sikkert fra start:** programmet *kopierer* kun filer. Det sletter, flytter eller ændrer aldrig dine originaler.
 

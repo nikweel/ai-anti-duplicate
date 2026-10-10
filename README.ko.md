@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · **한국어** · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI**는 파일 크기, 날짜, 해시가 아니라 **사진에 담긴 내용**으로 중복 **사진**(JPG, PNG, WebP)을 찾아 주는 무료 오픈소스 앱입니다. AI를 사용하므로 크기를 줄이거나, 다시 압축하거나, 조금 자르거나, 회전한 같은 사진도 알아봅니다. 사진 모음 전용이며 문서, 동영상, 그 밖의 파일용이 아닙니다.
+**Photo Duplicate Finder AI**는 파일 크기, 날짜, 해시가 아니라 **사진에 담긴 내용**으로 중복 **사진**(JPG, PNG, WebP 및 카메라 RAW)을 찾아 주는 무료 오픈소스 앱입니다. AI를 사용하므로 크기를 줄이거나, 다시 압축하거나, 조금 자르거나, 회전한 같은 사진도 알아봅니다. 사진 모음 전용이며 문서, 동영상, 그 밖의 파일용이 아닙니다.
 
 > 🛡️ **설계부터 안전합니다:** 프로그램은 파일을 *복사만* 합니다. 원본을 삭제하거나 이동하거나 수정하는 일은 절대 없습니다.
 

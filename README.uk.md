@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · **Українська**
 
-**Photo Duplicate Finder AI** — безкоштовна програма з відкритим кодом для пошуку дублікатів **фотографій** (JPG, PNG, WebP) за **вмістом кадру**, а не за розміром, датою чи хешем. Працює на ШІ, тому впізнає той самий знімок, навіть якщо його зменшено, перестиснуто, трохи обрізано чи повернуто. Призначена лише для колекцій фото, а не для документів, відео чи інших файлів.
+**Photo Duplicate Finder AI** — безкоштовна програма з відкритим кодом для пошуку дублікатів **фотографій** (JPG, PNG, WebP + RAW) за **вмістом кадру**, а не за розміром, датою чи хешем. Працює на ШІ, тому впізнає той самий знімок, навіть якщо його зменшено, перестиснуто, трохи обрізано чи повернуто. Призначена лише для колекцій фото, а не для документів, відео чи інших файлів.
 
 > 🛡️ **Безпечно:** програма лише *копіює* файли. Вона ніколи не видаляє, не переміщує й не змінює ваші оригінали.
 

@@ -2,9 +2,10 @@ import logging
 from collections.abc import Callable
 
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image
 
 from ..data.models import ImageInfo
+from .imageio import open_image
 
 log = logging.getLogger(__name__)
 ROTATIONS = (0, 90, 180, 270)
@@ -12,11 +13,10 @@ ROTATIONS = (0, 90, 180, 270)
 
 def _load(info: ImageInfo) -> Image.Image | None:
     try:
-        with Image.open(info.path) as im:
-            im = ImageOps.exif_transpose(im).convert("RGB")
-            im.thumbnail((256, 256))  # CLIP всё равно уменьшает до 224
-            return im.copy()
-    except Exception as e:  # битый файл не должен ронять сканирование
+        im = open_image(info.path)
+        im.thumbnail((256, 256))  # модель всё равно уменьшает до 224
+        return im
+    except Exception as e:  # битый файл или RAW без поддержки не должен ронять сканирование
         log.warning("Пропущен %s: %s", info.path, e)
         return None
 

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from .models import ImageInfo
 
-EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+from ..core.imageio import SUPPORTED_EXT as EXTENSIONS
 
 
 def scan_folder(root: Path, should_stop: Callable[[], bool] = lambda: False, recursive: bool = True) -> list[ImageInfo]:

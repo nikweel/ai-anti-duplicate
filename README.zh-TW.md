@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · **繁體中文** · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** 是免費的開源應用程式，透過 AI 比較**相片的內容**，而不是檔案大小、日期或雜湊值，來找出重複的**相片**（JPG、PNG、WebP）。即使相片被縮小、重新壓縮、稍微裁切或旋轉，也能辨識出來。僅適用於相片收藏，不適用於文件、影片或其他檔案。
+**Photo Duplicate Finder AI** 是免費的開源應用程式，透過 AI 比較**相片的內容**，而不是檔案大小、日期或雜湊值，來找出重複的**相片**（JPG、PNG、WebP 及相機 RAW）。即使相片被縮小、重新壓縮、稍微裁切或旋轉，也能辨識出來。僅適用於相片收藏，不適用於文件、影片或其他檔案。
 
 > 🛡️ **安全為先：**程式只會*複製*檔案，絕不刪除、移動或修改您的原始相片。
 

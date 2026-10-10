@@ -2,7 +2,7 @@
 
 [العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · **English** · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
-**Photo Duplicate Finder AI** is a free, open-source app for finding duplicate **photos** (JPG, PNG, WebP) by **what is in the picture** — not by file size, date or hash.
+**Photo Duplicate Finder AI** is a free, open-source app for finding duplicate **photos** (JPG, PNG, WebP and camera RAW) by **what is in the picture** — not by file size, date or hash.
 It uses AI (DINOv2), so it recognises the same shot even if it was resized, re-compressed, cropped a little or rotated.
 It is built for photo collections only; it is not a general tool for finding duplicate documents, videos or other files.
 
@@ -24,6 +24,12 @@ It is built for photo collections only; it is not a general tool for finding dup
 The interface is dark and available in English and Russian (language switcher in the top-right corner).
 
 The **Sensitivity** slider controls how similar two photos must be: *Strict* finds only near-identical files, *Soft* also finds similar shots from the same scene.
+
+## RAW support
+Besides JPG, PNG and WebP the app reads the **RAW files of most cameras**: CR2, CR3, CRW (Canon), NEF, NRW (Nikon), ARW, SRF, SR2 (Sony), DNG, ORF (Olympus), RAF (Fujifilm), RW2, RWL (Panasonic/Leica), PEF (Pentax), SRW (Samsung), 3FR (Hasselblad), IIQ (Phase One), X3F (Sigma), MRW, KDC, ERF, MEF, MOS and generic RAW.
+- To compare, the app uses the **preview embedded in the RAW file** (fast); only if the preview is too small it develops the RAW at reduced size. Your RAW files are **never modified**: the original file is copied byte for byte.
+- A RAW and its JPEG export are recognised as duplicates of the same shot. Use the rule *highest resolution* or *largest file* to keep the RAW, or *choose manually* to keep both.
+- The *shooting date* for renaming is read from the camera's EXIF data, and the real resolution of the RAW frame is used for the *highest resolution* rule.
 
 ## Reviewing duplicates manually
 Choose **"Choose manually for each shot"** and the app shows every group of duplicates in a window:
