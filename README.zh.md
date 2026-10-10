@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-[English](README.md) · [Русский](README.ru.md) · **中文** · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
+[العربية](README.ar.md) · [Български](README.bg.md) · **中文（简体）** · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
 免费、开源的重复照片查找工具：通过 AI 比较**照片内容**，而不是文件大小、日期或哈希。即使照片被缩小、重新压缩、轻微裁剪或旋转，也能识别。
 
@@ -38,7 +38,7 @@
 - 手动检查：可勾选多张照片保存，鼠标悬停放大查看
 - 目标文件夹文件名：保留原名或按日期重命名（EXIF 拍摄日期、时间戳），冲突时绝不覆盖
 - 包含所有子文件夹
-- 12 种界面语言，深色/浅色主题
+- 30 种界面语言，深色/浅色主题
 
 ## 作者
 

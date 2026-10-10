@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-[English](README.md) · **Русский** · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
+[العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · **Русский** · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
 **Photo Duplicate Finder AI** — бесплатная программа с открытым кодом для поиска дубликатов **фотографий** (JPG, PNG, WebP) по **содержимому кадра**, а не по размеру, дате или md5.
 Работает на ИИ (DINOv2), поэтому узнаёт один и тот же снимок, даже если он уменьшен, пересжат, слегка обрезан или повёрнут.
@@ -11,9 +11,9 @@
 ## Скриншоты
 *(демо на сгенерированных картинках: у трёх сцен есть копии — уменьшенная и повёрнутая, ещё две сцены уникальны)*
 
-![Главное окно](docs/screenshots/main.png)
-![Выбор, какой дубль оставить](docs/screenshots/review.png)
-![Настройки](docs/screenshots/settings.png)
+![Главное окно](docs/screenshots/main.ru.png)
+![Выбор, какой дубль оставить](docs/screenshots/review.ru.png)
+![Настройки](docs/screenshots/settings.ru.png)
 
 ## Как пользоваться
 1. Выберите папку с фотографиями.
@@ -42,7 +42,7 @@
 Список «что куда скопировано» сохраняется в `data/logs/last_export.csv`.
 
 ## Настройки (кнопка ⚙)
-- **Язык:** 12 языков — English, Русский, 中文, Español, हिन्दी, Português, Français, Deutsch, 日本語, العربية, Bahasa Indonesia, Türkçe (арабский отображается справа налево). При первом запуске язык определяется по системе.
+- **Язык:** 30 языков (список отсортирован по алфавиту английских названий, каждый язык подписан на своём языке): арабский, болгарский, китайский (упрощённый и традиционный), хорватский, чешский, датский, нидерландский, английский, финский, французский, немецкий, греческий, хинди, венгерский, индонезийский, итальянский, японский, корейский, литовский, норвежский, польский, португальский, румынский, русский, словацкий, испанский, шведский, турецкий, украинский (арабский отображается справа налево). При первом запуске язык определяется по системе.
 - **Тема:** тёмная, светлая или как в системе.
 - **Модель распознавания** (размер загрузки показан до выбора):
 

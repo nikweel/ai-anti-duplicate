@@ -53,7 +53,7 @@ QPushButton:disabled {{ color: {c['muted']}; background: {c['panel2']}; border-c
 QPushButton#primary {{ background: {c['accent']}; color: white; border: none; font-weight: 600; padding: {px // 2}px {px}px; }}
 QPushButton#primary:hover {{ background: {c['accent_h']}; }}
 QPushButton#primary:disabled {{ background: {c['accent_off']}; color: {c['accent_off_fg']}; }}
-QComboBox {{ background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; padding: {px // 3}px {px // 2}px; }}
+QComboBox {{ min-height: {int(px * 1.5)}px; background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; padding: {px // 3}px {px // 2}px; }}
 QComboBox:disabled {{ color: {c['muted']}; }}
 QComboBox QAbstractItemView {{
     background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']};
@@ -70,7 +70,7 @@ QCheckBox::indicator {{ width: {px}px; height: {px}px; border-radius: 4px; borde
 QCheckBox::indicator:checked {{ background: {c['accent']}; border-color: {c['accent']}; image: url({CHECK}); }}
 QGroupBox {{ color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; margin-top: {px}px; padding: {px}px {px // 2}px {px // 2}px; }}
 QGroupBox::title {{ subcontrol-origin: margin; left: {px}px; padding: 0 4px; }}
-QLineEdit {{ background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; padding: {px // 3}px {px // 2}px; }}
+QLineEdit {{ min-height: {int(px * 1.5)}px; background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']}; border-radius: {r}px; padding: {px // 3}px {px // 2}px; }}
 QScrollArea {{ background: transparent; }}
 QToolTip {{ background: {c['panel']}; color: {c['fg']}; border: 1px solid {c['border']}; }}
 """

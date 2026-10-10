@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-**English** · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
+[العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · **English** · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
 **Photo Duplicate Finder AI** is a free, open-source app for finding duplicate **photos** (JPG, PNG, WebP) by **what is in the picture** — not by file size, date or hash.
 It uses AI (DINOv2), so it recognises the same shot even if it was resized, re-compressed, cropped a little or rotated.
@@ -42,7 +42,7 @@ The program searches **all subfolders** (can be switched off with *Search in sub
 A list of what was copied where is saved to `data/logs/last_export.csv`.
 
 ## Settings (⚙ button)
-- **Language:** 12 languages — English, Русский, 中文, Español, हिन्दी, Português, Français, Deutsch, 日本語, العربية, Bahasa Indonesia, Türkçe (Arabic is shown right-to-left). The language is detected from your system on first launch.
+- **Language:** 30 languages (the list is sorted alphabetically by English name and each language is shown in its own script): Arabic, Bulgarian, Chinese (Simplified and Traditional), Croatian, Czech, Danish, Dutch, English, Finnish, French, German, Greek, Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Lithuanian, Norwegian, Polish, Portuguese, Romanian, Russian, Slovak, Spanish, Swedish, Turkish, Ukrainian (Arabic is shown right-to-left). The language is detected from your system on first launch.
 - **Theme:** dark, light or follow the system.
 - **Recognition model** (the size of each download is shown before you choose):
 

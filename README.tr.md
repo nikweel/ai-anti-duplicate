@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-[English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · **Türkçe**
+[العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · **Türkçe** · [Українська](README.uk.md)
 
 Yinelenen fotoğrafları dosya boyutuna, tarihe veya karma değerine göre değil, **görüntünün içeriğine** göre bulan ücretsiz, açık kaynaklı bir araç. Yapay zekâ kullandığı için aynı fotoğrafı küçültülmüş, yeniden sıkıştırılmış, hafifçe kırpılmış veya döndürülmüş olsa bile tanır.
 
@@ -38,7 +38,7 @@ Program ücretsizdir ve kod imzalı değildir (sertifikalar ücretlidir), bu yü
 - Elle inceleme: kaydetmek için birden fazla fotoğrafı işaretleyin, büyütmek için üzerine gelin
 - Hedef klasörde dosya adları: orijinal veya tarihe göre (EXIF, zaman damgası); asla üzerine yazmaz
 - Tüm alt klasörler dahil
-- 12 dil, koyu ve açık tema
+- 30 dil, koyu ve açık tema
 
 ## Yazar
 

@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-[English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · **日本語** · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
+[العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · **日本語** · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
 ファイルサイズや日付、ハッシュではなく、**写真の内容**で重複を見つける無料のオープンソースツールです。AI を使うため、縮小・再圧縮・軽いトリミング・回転をした同じ写真も見つけられます。
 
@@ -38,7 +38,7 @@
 - 手動確認：複数の写真にチェックして保存、カーソルを合わせて拡大
 - 保存先のファイル名：元の名前または日付（EXIF、タイムスタンプ）。上書きは一切なし
 - すべてのサブフォルダを対象
-- 12言語、ダーク／ライトテーマ
+- 30言語、ダーク／ライトテーマ
 
 ## 作者
 

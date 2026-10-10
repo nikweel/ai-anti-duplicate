@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-[English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · **हिन्दी** · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
+[العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · **हिन्दी** · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · [Español](README.es.md) · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
 मुफ़्त, ओपन-सोर्स टूल जो डुप्लिकेट फ़ोटो को **तस्वीर की सामग्री** से खोजता है — फ़ाइल के आकार, तारीख़ या हैश से नहीं। AI की मदद से यह एक ही फ़ोटो को तब भी पहचान लेता है जब वह छोटी की गई हो, दोबारा कम्प्रेस हुई हो, थोड़ी क्रॉप हुई हो या घुमाई गई हो।
 
@@ -38,7 +38,7 @@
 - हाथ से जाँच: कई फ़ोटो चुनकर सहेजें, कर्सर ले जाकर बड़ा देखें
 - गंतव्य में फ़ाइल के नाम: मूल या तारीख़ से (EXIF, टाइमस्टैम्प); कभी ओवरराइट नहीं
 - सभी उप-फ़ोल्डर शामिल
-- 12 भाषाएँ, गहरी और हल्की थीम
+- 30 भाषाएँ, गहरी और हल्की थीम
 
 ## लेखक
 

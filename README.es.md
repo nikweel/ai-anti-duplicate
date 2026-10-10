@@ -1,6 +1,6 @@
 # Photo Duplicate Finder AI
 
-[English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · **Español** · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
+[العربية](README.ar.md) · [Български](README.bg.md) · [中文（简体）](README.zh.md) · [繁體中文](README.zh-TW.md) · [Hrvatski](README.hr.md) · [Čeština](README.cs.md) · [Dansk](README.da.md) · [Nederlands](README.nl.md) · [English](README.md) · [Suomi](README.fi.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Lietuvių](README.lt.md) · [Norsk](README.nb.md) · [Polski](README.pl.md) · [Português](README.pt.md) · [Română](README.ro.md) · [Русский](README.ru.md) · [Slovenčina](README.sk.md) · **Español** · [Svenska](README.sv.md) · [Türkçe](README.tr.md) · [Українська](README.uk.md)
 
 Herramienta gratuita y de código abierto que encuentra fotos duplicadas por **lo que muestra la imagen**, no por tamaño, fecha o hash. Usa IA, así que reconoce la misma foto aunque esté reducida, recomprimida, ligeramente recortada o girada.
 
@@ -38,7 +38,7 @@ El programa es gratuito y no está firmado con certificado (son de pago), por es
 - Revisión manual: marca varias fotos para guardar y amplíalas pasando el cursor
 - Nombres en la carpeta de destino: originales o por fecha (EXIF, marca de tiempo), sin sobrescribir nunca
 - Incluye todas las subcarpetas
-- 12 idiomas, tema oscuro y claro
+- 30 idiomas, tema oscuro y claro
 
 ## Autor
 
