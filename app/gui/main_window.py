@@ -3,13 +3,16 @@ from pathlib import Path
 from PySide6.QtCore import QTimer, Qt, Signal
 from PySide6.QtGui import QGuiApplication, QIcon, QPixmap
 from PySide6.QtWidgets import (
-    QApplication, QButtonGroup, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
+    QApplication, QButtonGroup, QFrame, QScrollArea, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
     QPushButton, QRadioButton, QSlider, QVBoxLayout, QWidget,
 )
 
 from ..utils.paths import ICON
 from ..data.models import DuplicateGroup
 from ..services.exporter import export_unique
+from ..services.naming import DATE_FORMATS, NamingOptions, format_date
+from datetime import datetime
+from PySide6.QtWidgets import QCheckBox, QGroupBox, QLineEdit
 from .. import i18n
 from ..core.model_manager import MODELS, is_downloaded
 from ..utils import settings
@@ -116,7 +119,11 @@ class MainWindow(QMainWindow):
         self._status_key = "loading_model"
 
         w = QWidget()
-        self.setCentralWidget(w)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setWidget(w)
+        self.setCentralWidget(scroll)
         lay = QVBoxLayout(w)
         lay.setContentsMargins(24, 20, 24, 20)
         lay.setSpacing(12)
@@ -134,6 +141,7 @@ class MainWindow(QMainWindow):
         for rid in RULES:
             self.rule.addItem("", rid)
         lay.addWidget(self.rule)
+        self._build_names_box(lay)
         self.sens_title = QLabel()
         lay.addWidget(self.sens_title)
         srow = QHBoxLayout()
@@ -232,7 +240,71 @@ class MainWindow(QMainWindow):
         lay.addLayout(row)
         return btn, lbl
 
+    def _build_names_box(self, lay):
+        o = NamingOptions.from_dict(settings.get("naming"))
+        self.recursive = QCheckBox()
+        self.recursive.setChecked(bool(settings.get("recursive", True)))
+        self.recursive.toggled.connect(lambda v: settings.put("recursive", v))
+        lay.addWidget(self.recursive)
+        self.names_box = QGroupBox()
+        g = QVBoxLayout(self.names_box)
+        g.setSpacing(8)
+        self.nm_mode = QComboBox()
+        for k in ("keep", "date"):
+            self.nm_mode.addItem("", k)
+        self.nm_src = QComboBox()
+        for k in ("exif", "created", "modified"):
+            self.nm_src.addItem("", k)
+        self.nm_fmt = QComboBox()
+        for k in DATE_FORMATS:
+            self.nm_fmt.addItem("", k)
+        self.nm_custom = QLineEdit(o.custom)
+        self.nm_custom_hint = QLabel()
+        self.nm_custom_hint.setWordWrap(True)
+        self.nm_conf = QComboBox()
+        for k in ("counter", "prefix"):
+            self.nm_conf.addItem("", k)
+        self.nm_example = QLabel()
+        self.nm_safe = QLabel()
+        self.nm_safe.setWordWrap(True)
+        for wdg in (self.nm_mode, self.nm_src, self.nm_fmt, self.nm_custom, self.nm_custom_hint, self.nm_conf,
+                    self.nm_example, self.nm_safe):
+            g.addWidget(wdg)
+        for cb, val in ((self.nm_mode, o.mode), (self.nm_src, o.date_source), (self.nm_fmt, o.date_format),
+                        (self.nm_conf, o.conflict)):
+            cb.setCurrentIndex(max(0, cb.findData(val)))
+            cb.currentIndexChanged.connect(self._names_changed)
+        self.nm_custom.textChanged.connect(self._names_changed)
+        lay.addWidget(self.names_box)
+
+    def naming(self) -> NamingOptions:
+        return NamingOptions(self.nm_mode.currentData(), self.nm_src.currentData(), self.nm_fmt.currentData(),
+                             self.nm_custom.text() or "%Y-%m-%d_%H-%M-%S", self.nm_conf.currentData())
+
+    def _names_changed(self, *_):
+        o = self.naming()
+        settings.put("naming", o.to_dict())
+        by_date = o.mode == "date"
+        self.nm_src.setVisible(by_date)
+        self.nm_fmt.setVisible(by_date)
+        custom = by_date and o.date_format == "custom"
+        self.nm_custom.setVisible(custom)
+        self.nm_custom_hint.setVisible(custom)
+        try:
+            name = (format_date(datetime(2024, 5, 1, 12, 30, 45), o.date_format, o.custom) if by_date else "IMG_0042") + ".jpg"
+        except Exception:
+            name = "?"
+        self.nm_example.setText(tr("nm_example", name=name))
+
     def retranslate(self):
+        self.recursive.setText(tr("recursive"))
+        self.names_box.setTitle(tr("names_group"))
+        for cb, prefix in ((self.nm_mode, "nm_mode_"), (self.nm_src, "nm_src_"), (self.nm_fmt, "nm_fmt_"), (self.nm_conf, "nm_conf_")):
+            for i in range(cb.count()):
+                cb.setItemText(i, tr(prefix + cb.itemData(i)))
+        self.nm_custom_hint.setText(tr("nm_custom_hint"))
+        self.nm_safe.setText(tr("nm_safe"))
+        self._names_changed()
         self.settings_btn.setText("⚙ " + tr("settings"))
         self.src_btn.setText(tr("src_btn"))
         self.dst_btn.setText(tr("dst_btn"))
@@ -290,7 +362,7 @@ class MainWindow(QMainWindow):
         self._busy(False)
 
     def _busy(self, busy: bool):
-        for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start, self.settings_btn):
+        for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start, self.settings_btn, self.recursive, self.names_box):
             x.setEnabled(not busy)
         if not busy:
             self._refresh()
@@ -300,7 +372,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, tr("folders"), tr("diff_folders"))
             return
         self._busy(True)
-        self.worker = ScanWorker(self.model, self.src, self.dst, self.threshold())
+        self.worker = ScanWorker(self.model, self.src, self.dst, self.threshold(), True, self.recursive.isChecked())
         self.worker.progress.connect(self.on_progress)
         self.worker.done.connect(self.on_done)
         self.worker.failed.connect(self.on_error)
@@ -311,7 +383,7 @@ class MainWindow(QMainWindow):
             if groups and not self._resolve(groups):
                 self.status.setText(tr("cancelled"))
                 return
-            n = export_unique(self.dst, groups, images)
+            n = export_unique(self.dst, groups, images, self.naming())
             self.status.setText(tr("done_status", n=n, g=len(groups)))
             QMessageBox.information(self, tr("done"), tr("done_box", n=n, dst=self.dst))
         except Exception as e:

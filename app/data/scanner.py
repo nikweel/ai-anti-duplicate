@@ -7,11 +7,13 @@ from .models import ImageInfo
 EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
-def scan_folder(root: Path, should_stop: Callable[[], bool] = lambda: False) -> list[ImageInfo]:
+def scan_folder(root: Path, should_stop: Callable[[], bool] = lambda: False, recursive: bool = True) -> list[ImageInfo]:
     result: list[ImageInfo] = []
-    for dirpath, _, files in os.walk(root):
+    for dirpath, dirs, files in os.walk(root):
         if should_stop():
             break
+        if not recursive:
+            dirs.clear()  # только корень выбранной папки
         for name in files:
             if Path(name).suffix.lower() in EXTENSIONS:
                 p = Path(dirpath) / name

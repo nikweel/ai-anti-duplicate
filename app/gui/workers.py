@@ -36,15 +36,15 @@ class ScanWorker(QThread):
     done = Signal(list, list)  # all_images, groups
     failed = Signal(str)
 
-    def __init__(self, model, folder: Path, exclude: Path, threshold: float = 0.92, rotations: bool = True):
+    def __init__(self, model, folder: Path, exclude: Path, threshold: float = 0.92, rotations: bool = True, recursive: bool = True):
         super().__init__()
         self.model, self.folder, self.exclude = model, folder, exclude
-        self.threshold, self.rotations = threshold, rotations
+        self.threshold, self.rotations, self.recursive = threshold, rotations, recursive
 
     def run(self):
         try:
             self.progress.emit(0, tr("scanning"))
-            infos = [i for i in scan_folder(self.folder, self.isInterruptionRequested) if not i.path.is_relative_to(self.exclude)]
+            infos = [i for i in scan_folder(self.folder, self.isInterruptionRequested, self.recursive) if not i.path.is_relative_to(self.exclude)]
             kept, emb = embed_images(
                 self.model, infos, self.rotations,
                 progress=lambda d, t: self.progress.emit(d / max(t, 1), tr("analysis", d=d, t=t)),

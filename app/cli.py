@@ -9,6 +9,7 @@ from .core.model_manager import MODELS, is_downloaded, load_model
 from .data.models import DuplicateGroup
 from .data.scanner import scan_folder
 from .services.exporter import export_unique
+from .services.naming import DATE_FORMATS, NamingOptions
 from .services.selection import RULES
 
 
@@ -20,12 +21,18 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--model", choices=list(MODELS), default="fast")
     ap.add_argument("--device", choices=["auto", "cpu", "gpu"], default="auto")
     ap.add_argument("--sensitivity", type=int, default=33)
+    ap.add_argument("--no-recursive", action="store_true", help="не заходить во вложенные папки")
+    ap.add_argument("--names", choices=["keep", "date"], default="keep")
+    ap.add_argument("--date-source", choices=["exif", "created", "modified"], default="exif")
+    ap.add_argument("--date-format", choices=list(DATE_FORMATS), default="dash")
+    ap.add_argument("--date-custom", default="%Y-%m-%d_%H-%M-%S")
+    ap.add_argument("--conflict", choices=["counter", "prefix"], default="counter")
     a = ap.parse_args(argv)
 
     print(f"model={a.model} downloaded={is_downloaded(a.model)}")
     model = load_model(a.model, a.device, lambda f, m: print(f"\r{m}", end="", flush=True))
     print(f"\ndevice={model.device_name}")
-    infos = [i for i in scan_folder(a.src) if not i.path.is_relative_to(a.dst)]
+    infos = [i for i in scan_folder(a.src, recursive=not a.no_recursive) if not i.path.is_relative_to(a.dst)]
     kept, emb = embed_images(model, infos)
     thr = 0.98 - a.sensitivity * 0.0018 + MODELS[a.model].threshold_shift
     groups = []
@@ -33,7 +40,7 @@ def main(argv: list[str]) -> int:
         g = DuplicateGroup([kept[i] for i in idx])
         g.keep = RULES[a.rule](g)
         groups.append(g)
-    n = export_unique(a.dst, groups, kept)
+    n = export_unique(a.dst, groups, kept, NamingOptions(a.names, a.date_source, a.date_format, a.date_custom, a.conflict))
     print(f"images={len(kept)} groups={len(groups)} copied={n} threshold={thr:.3f}")
     for g in groups:
         print("GROUP", [i.path.name for i in g.images], "-> keep", g.images[g.keep].path.name)

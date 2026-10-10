@@ -24,6 +24,15 @@ The interface is dark and available in English and Russian (language switcher in
 
 The **Sensitivity** slider controls how similar two photos must be: *Strict* finds only near-identical files, *Soft* also finds similar shots from the same scene.
 
+## File names when copying
+The program searches **all subfolders** (can be switched off with *Search in subfolders*) and **never overwrites or loses a file**. Configure everything before you press the button:
+- **Keep names as they are**, or **rename by date**.
+- **Date source:** shooting date (EXIF, falls back to the file date), file creation date or file modification date. *(On Linux many file systems do not store a creation date, so the modification date is used.)*
+- **Date format:** `2024-05-01_12-30-45`, `20240501_123045`, a Unix **timestamp** (seconds or milliseconds) or your own pattern (`%Y %m %d %H %M %S`, `{ts}`, `{ms}`).
+- **On a name conflict:** add a number (`IMG_0001_1.jpg`) or a prefix with the source folder name (`Holiday_IMG_0001.jpg`, then a number if it is still taken). A file that is already in the destination with identical content is simply skipped, so you can safely run the program again.
+
+A list of what was copied where is saved to `data/logs/last_export.csv`.
+
 ## Settings (⚙ button)
 - **Language:** English / Русский.
 - **Theme:** dark, light or follow the system.
