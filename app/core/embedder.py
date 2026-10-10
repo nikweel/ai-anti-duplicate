@@ -25,21 +25,33 @@ def embed_images(
     model,
     infos: list[ImageInfo],
     rotations: bool = True,
-    batch_size: int = 32,
+    batch_size: int = 8,
     progress: Callable[[int, int], None] = lambda d, t: None,
     should_stop: Callable[[], bool] = lambda: False,
+    checkpoint: Callable[[], None] = lambda: None,
 ) -> tuple[list[ImageInfo], np.ndarray]:
-    """Возвращает (успешные файлы, эмбеддинги формы [N, R, D]), L2-нормированные."""
+    """Возвращает (успешные файлы, эмбеддинги формы [N, R, D]), L2-нормированные.
+
+    checkpoint() вызывается между шагами: там программа может стоять на паузе;
+    should_stop() — запрос отмены (недосчитанная порция отбрасывается)."""
     angles = ROTATIONS if rotations else (0,)
     kept: list[ImageInfo] = []
     chunks: list[np.ndarray] = []
     for start in range(0, len(infos), batch_size):
+        checkpoint()
         if should_stop():
             break
         batch = [(i, im) for i in infos[start:start + batch_size] if (im := _load(i)) is not None]
         if batch:
             imgs = [im for _, im in batch]
-            per_angle = [model.encode(imgs if a == 0 else [im.rotate(-a, expand=True) for im in imgs], batch_size) for a in angles]
+            per_angle = []
+            for a in angles:
+                checkpoint()
+                if should_stop():
+                    break
+                per_angle.append(model.encode(imgs if a == 0 else [im.rotate(-a, expand=True) for im in imgs], batch_size))
+            if len(per_angle) < len(angles):  # отмена в середине порции
+                break
             chunks.append(np.stack(per_angle, axis=1).astype(np.float32))
             kept.extend(i for i, _ in batch)
         progress(min(start + batch_size, len(infos)), len(infos))

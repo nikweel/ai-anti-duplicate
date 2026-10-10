@@ -12,7 +12,8 @@ It is built for photo collections only; it is not a general tool for finding dup
 *(demo with generated pictures: three scenes each have copies — an edited small one and a rotated one — and two scenes are unique)*
 
 ![Main window](docs/screenshots/main.png)
-![Choosing which duplicate to keep](docs/screenshots/review.png)
+![Working: progress, time left, Pause and Cancel](docs/screenshots/running.png)
+![Choosing which duplicates to keep](docs/screenshots/review.png)
 ![Settings](docs/screenshots/settings.png)
 
 ## How it works
@@ -30,6 +31,14 @@ Besides JPG, PNG and WebP the app reads the **RAW files of most cameras**: CR2, 
 - To compare, the app uses the **preview embedded in the RAW file** (fast); only if the preview is too small it develops the RAW at reduced size. Your RAW files are **never modified**: the original file is copied byte for byte.
 - A RAW and its JPEG export are recognised as duplicates of the same shot. Use the rule *highest resolution* or *largest file* to keep the RAW, or *choose manually* to keep both.
 - The *shooting date* for renaming is read from the camera's EXIF data, and the real resolution of the RAW frame is used for the *highest resolution* rule.
+
+## Convenience
+- **Folders:** drag a folder from your file manager onto a folder field, or click *Browse…*. The last used folders are remembered.
+- **Clear layout:** *Folders* → *Search options* → one big button. Rarely needed settings (subfolders, file names, opening the result) are tucked under *More options*. If the button is unavailable, a hint says why.
+- **While it works:** progress, an estimate of the time left, and **Pause** / **Cancel** buttons. Cancelling never touches your originals: files already copied stay in the destination and a repeat run simply skips them.
+- **When it is done:** a summary and an *Open folder* button; by default the destination folder opens by itself (you can switch this off under *More options*).
+- **Keyboard:** `Ctrl+O` source folder · `Ctrl+Shift+O` destination folder · `Ctrl+Enter` start · `Esc` cancel · `Ctrl+,` settings · `Ctrl+A` select all in the duplicate review window.
+- When choosing between duplicates the window shows each file's date, size and real resolution and marks the **newest**, the **largest file** and the **highest resolution**.
 
 ## Reviewing duplicates manually
 Choose **"Choose manually for each shot"** and the app shows every group of duplicates in a window:

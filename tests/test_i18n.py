@@ -19,7 +19,7 @@ def test_placeholders_match_english():
 
 
 def test_format_works_for_all():
-    args = dict(n=1, t=2, g=3, dst="x", d=4, p=5, mb=6, dev="CPU", name="a", e="err", ts="", ms="")
+    args = dict(m=3, n=1, t=2, g=3, dst="x", d=4, p=5, mb=6, dev="CPU", name="a", e="err", ts="", ms="")
     for code, t in STRINGS.items():
         for k, v in t.items():
             if k != "nm_custom_hint":  # там {ts}/{ms} — буквальный текст, не подстановка

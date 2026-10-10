@@ -1,9 +1,12 @@
 from pathlib import Path
 
-from PySide6.QtCore import QSize, QTimer, Qt, Signal
-from PySide6.QtGui import QGuiApplication, QIcon, QImage, QImageReader, QPainter, QPalette, QPen, QPixmap
+import math
+import time
+
+from PySide6.QtCore import QDateTime, QLocale, QSize, QTimer, QUrl, Qt, Signal
+from PySide6.QtGui import QDesktopServices, QGuiApplication, QIcon, QKeySequence, QShortcut, QImage, QImageReader, QPainter, QPalette, QPen, QPixmap
 from PySide6.QtWidgets import (
-    QApplication, QFrame, QGridLayout, QScrollArea, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
+    QApplication, QFrame, QGridLayout, QToolButton, QScrollArea, QComboBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar, QSizePolicy,
     QPushButton, QRadioButton, QSlider, QVBoxLayout, QWidget,
 )
 
@@ -21,7 +24,7 @@ from ..i18n import tr
 from ..services.selection import RULES, pick_newest
 from . import theme
 from .settings_dialog import SettingsDialog
-from .workers import ModelWorker, ScanWorker
+from .workers import ExportWorker, ModelWorker, ScanWorker
 
 
 def load_pixmap(path, max_side: int) -> QPixmap:
@@ -41,6 +44,28 @@ def load_pixmap(path, max_side: int) -> QPixmap:
         return QPixmap.fromImage(QImage(data, im.width, im.height, im.width * 3, QImage.Format_RGB888).copy())
     except Exception:
         return QPixmap()
+
+
+def _badges(group) -> list[list[str]]:
+    """Подсказки к выбору: какой файл самый новый / самый тяжёлый / с самым большим разрешением."""
+    from ..core.imageio import image_size
+
+    imgs = group.images
+    pix = []
+    for im in imgs:
+        try:
+            w, h = image_size(im.path)
+            pix.append(w * h)
+        except Exception:
+            pix.append(0)
+    out = [[] for _ in imgs]
+    for key, values in (("badge_newest", [i.mtime for i in imgs]), ("badge_largest", [i.size for i in imgs]),
+                        ("badge_hires", pix)):
+        top = max(values)
+        winners = [k for k, v in enumerate(values) if v == top]
+        if len(winners) == 1 and len(set(values)) > 1:
+            out[winners[0]].append(key)
+    return out
 
 
 def _dims(path) -> str:
@@ -86,6 +111,111 @@ def compact(cb: QComboBox) -> QComboBox:
     cb.setMinimumContentsLength(18)
     cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
     return cb
+
+
+class AutoHideLabel(QLabel):
+    """Надпись, которая не занимает места, когда пуста."""
+
+    def setText(self, text: str) -> None:
+        super().setText(text)
+        self.setVisible(bool(text))
+
+
+def repolish(w: QWidget) -> None:
+    w.style().unpolish(w)
+    w.style().polish(w)
+
+
+class PathField(QLineEdit):
+    """Поле выбранной папки: клик = «Обзор», можно перетащить папку из файлового менеджера."""
+
+    clicked = Signal()
+    dropped = Signal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("path")
+        self.setReadOnly(True)
+        self.setAcceptDrops(True)
+        self.setCursor(Qt.PointingHandCursor)
+        self.setProperty("hasValue", False)
+        self.setProperty("dropActive", False)
+
+    def set_path(self, text: str) -> None:
+        self.setText(text)
+        self.setToolTip(text)
+        self.setProperty("hasValue", bool(text))
+        repolish(self)
+
+    def _dir_from(self, e):
+        for u in e.mimeData().urls():
+            if u.isLocalFile() and Path(u.toLocalFile()).is_dir():
+                return u.toLocalFile()
+        return None
+
+    def dragEnterEvent(self, e):
+        if self._dir_from(e):
+            e.acceptProposedAction()
+            self.setProperty("dropActive", True)
+            repolish(self)
+
+    def dragLeaveEvent(self, e):
+        self.setProperty("dropActive", False)
+        repolish(self)
+
+    def dropEvent(self, e):
+        self.setProperty("dropActive", False)
+        repolish(self)
+        if d := self._dir_from(e):
+            self.dropped.emit(d)
+
+    def mouseReleaseEvent(self, e):
+        super().mouseReleaseEvent(e)
+        self.clicked.emit()
+
+
+class Card(QFrame):
+    """Смысловая группа элементов с заголовком."""
+
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("card")
+        self.body = QVBoxLayout(self)
+        self.body.setContentsMargins(16, 14, 16, 16)
+        self.body.setSpacing(10)
+        self.title = QLabel()
+        self.title.setObjectName("cardTitle")
+        self.body.addWidget(self.title)
+
+
+class Disclosure(QWidget):
+    """Сворачиваемый блок «Дополнительно»: редкие настройки не загромождают главное окно."""
+
+    toggled = Signal(bool)
+
+    def __init__(self, opened: bool = False):
+        super().__init__()
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        self.btn = QToolButton()
+        self.btn.setObjectName("disclosure")
+        self.btn.setCheckable(True)
+        self.btn.setChecked(opened)
+        self.btn.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.btn.setCursor(Qt.PointingHandCursor)
+        self.content = QWidget()
+        self.inner = QVBoxLayout(self.content)
+        self.inner.setContentsMargins(0, 4, 0, 0)
+        self.inner.setSpacing(10)
+        lay.addWidget(self.btn)
+        lay.addWidget(self.content)
+        self.btn.toggled.connect(self._on)
+        self._on(opened)
+
+    def _on(self, opened: bool):
+        self.btn.setArrowType(Qt.DownArrow if opened else Qt.RightArrow)
+        self.content.setVisible(opened)
+        self.toggled.emit(opened)
 
 
 class ScaledImage(QLabel):
@@ -156,11 +286,13 @@ class ReviewDialog(QDialog):
         lay.addWidget(QLabel(tr("review_hint")))
         grid = QGridLayout()
         cols = min(len(group.images), 4)
+        badges = _badges(group)
         self.boxes: list[QCheckBox] = []
         self.pics: list[ScaledImage] = []
         for i, img in enumerate(group.images):
             pic = ScaledImage(img)
-            cb = QCheckBox(f"{img.path.name}\n{img.size / 1024:.0f} {tr('kb')} · {_dims(img.path)}")
+            when = QLocale().toString(QDateTime.fromSecsSinceEpoch(int(img.mtime)), QLocale.ShortFormat)
+            cb = QCheckBox(f"{img.path.name}\n{img.size / 1024:.0f} {tr('kb')} · {_dims(img.path)}\n{when}")
             cb.toggled.connect(pic.set_selected)
             cb.toggled.connect(self._update_ok)
             pic.toggled.connect(cb.toggle)
@@ -169,6 +301,10 @@ class ReviewDialog(QDialog):
             col = QVBoxLayout()
             col.addWidget(pic, 1)
             col.addWidget(cb)
+            if badges[i]:
+                tag = QLabel("★ " + " · ".join(tr(b) for b in badges[i]))
+                tag.setObjectName("badge")
+                col.addWidget(tag)
             grid.addLayout(col, i // cols, i % cols)
         host = QWidget()
         host.setLayout(grid)
@@ -185,7 +321,9 @@ class ReviewDialog(QDialog):
         cancel.clicked.connect(self.reject)
         self.ok.clicked.connect(self._accept)
         self.ok.setObjectName("primary")
+        self.ok.setDefault(True)
         self.ok.setEnabled(False)
+        QShortcut(QKeySequence("Ctrl+A"), self, activated=lambda: [b.setChecked(True) for b in self.boxes])
         btns.addWidget(all_btn)
         btns.addWidget(none_btn)
         btns.addStretch()
@@ -221,27 +359,43 @@ class MainWindow(QMainWindow):
         scroll.setWidget(w)
         self.setCentralWidget(scroll)
         lay = QVBoxLayout(w)
-        lay.setContentsMargins(24, 20, 24, 20)
-        lay.setSpacing(12)
+        lay.setContentsMargins(20, 16, 20, 18)
+        lay.setSpacing(14)
 
+        # --- шапка
         top = QHBoxLayout()
-        top.addStretch()
+        logo = QLabel()
+        logo.setPixmap(QIcon(str(ICON)).pixmap(30, 30))
+        title = QLabel("Photo Duplicate Finder AI")
+        title.setObjectName("appTitle")
         self.settings_btn = QPushButton()
         self.settings_btn.clicked.connect(self.open_settings)
+        self.settings_btn.setShortcut(QKeySequence("Ctrl+,"))
+        top.addWidget(logo)
+        top.addWidget(title)
+        top.addStretch()
         top.addWidget(self.settings_btn)
         lay.addLayout(top)
 
-        self.src_btn, self.src_lbl = self._picker(lay, self.pick_src)
-        self.dst_btn, self.dst_lbl = self._picker(lay, self.pick_dst)
+        # --- карточка «Папки»
+        self.card_folders = Card()
+        self.src_lbl, self.src_field, self.src_btn = self._folder_row(self.card_folders.body, self.pick_src)
+        self.dst_lbl, self.dst_field, self.dst_btn = self._folder_row(self.card_folders.body, self.pick_dst)
+        self.src_field.dropped.connect(lambda d: self.set_folder("src", d))
+        self.dst_field.dropped.connect(lambda d: self.set_folder("dst", d))
+        lay.addWidget(self.card_folders)
+
+        # --- карточка «Параметры поиска»
+        self.card_options = Card()
+        o = self.card_options.body
         self.rule_lbl = QLabel()
-        lay.addWidget(self.rule_lbl)
         self.rule = compact(QComboBox())
         for rid in RULES:
             self.rule.addItem("", rid)
-        lay.addWidget(self.rule)
-        self._build_names_box(lay)
+        o.addWidget(self.rule_lbl)
+        o.addWidget(self.rule)
         self.sens_title = QLabel()
-        lay.addWidget(self.sens_title)
+        o.addWidget(self.sens_title)
         srow = QHBoxLayout()
         self.sens = QSlider(Qt.Horizontal)
         self.sens.setRange(0, 100)
@@ -251,23 +405,108 @@ class MainWindow(QMainWindow):
         srow.addWidget(self.strict_lbl)
         srow.addWidget(self.sens, 1)
         srow.addWidget(self.soft_lbl)
-        lay.addLayout(srow)
+        o.addLayout(srow)
         self.sens_hint = QLabel()
+        self.sens_hint.setObjectName("muted")
         self.sens_hint.setWordWrap(True)
-        lay.addWidget(self.sens_hint)
+        o.addWidget(self.sens_hint)
+        self.more = Disclosure(bool(settings.get("more_open", False)))
+        self.more.toggled.connect(self._more_toggled)
+        self._build_names_box(self.more.inner)
+        self.open_done = QCheckBox()
+        self.open_done.setChecked(bool(settings.get("open_when_done", True)))
+        self.open_done.toggled.connect(lambda v: settings.put("open_when_done", v))
+        self.more.inner.addWidget(self.open_done)
+        o.addWidget(self.more)
+        lay.addWidget(self.card_options)
+
+        # --- запуск и ход работы
         self.start = QPushButton()
         self.start.setObjectName("primary")
+        self.start.setMinimumHeight(46)
         self.start.setEnabled(False)
+        self.start.setShortcut(QKeySequence("Ctrl+Return"))
         self.start.clicked.connect(self.run)
+        lay.addWidget(self.start)
+        self.hint = AutoHideLabel()
+        self.hint.setObjectName("muted")
+        self.hint.setAlignment(Qt.AlignCenter)
+        self.hint.setWordWrap(True)
+        lay.addWidget(self.hint)
         self.bar = QProgressBar()
-        self.status = QLabel()
+        self.bar.hide()
+        self.pause_btn, self.cancel_btn = QPushButton(), QPushButton()
+        self.pause_btn.clicked.connect(self.toggle_pause)
+        self.cancel_btn.clicked.connect(self.cancel_work)
+        self.pause_btn.hide()
+        self.cancel_btn.hide()
+        self.cancel_btn.setShortcut(QKeySequence("Esc"))
+        prog = QHBoxLayout()
+        prog.addWidget(self.bar, 1)
+        prog.addWidget(self.pause_btn)
+        prog.addWidget(self.cancel_btn)
+        lay.addLayout(prog)
+        self.status = AutoHideLabel()
         self.status.setWordWrap(True)
-        for x in (self.start, self.bar, self.status):
-            lay.addWidget(x)
+        lay.addWidget(self.status)
+        sumrow = QHBoxLayout()
+        self.summary = QLabel()
+        self.summary.setObjectName("summary")
+        self.summary.setWordWrap(True)
+        self.open_btn = QPushButton()
+        self.open_btn.clicked.connect(self.open_destination)
+        sumrow.addWidget(self.summary, 1)
+        sumrow.addWidget(self.open_btn)
+        self.summary_box = QWidget()
+        self.summary_box.setLayout(sumrow)
+        sumrow.setContentsMargins(0, 0, 0, 0)
+        self.summary_box.hide()
+        lay.addWidget(self.summary_box)
+        lay.addStretch()
+
+        # --- горячие клавиши
+        QShortcut(QKeySequence("Ctrl+O"), self, activated=self.pick_src)
+        QShortcut(QKeySequence("Ctrl+Shift+O"), self, activated=self.pick_dst)
+        self._t0 = None
+        self._restore_folders()
         self.retranslate()
         self._fit_to_content()
 
         QTimer.singleShot(0, self.start_up)
+
+    def _folder_row(self, lay, slot):
+        label = QLabel()
+        field = PathField()
+        btn = QPushButton()
+        field.clicked.connect(slot)
+        btn.clicked.connect(slot)
+        row = QHBoxLayout()
+        row.addWidget(field, 1)
+        row.addWidget(btn)
+        lay.addWidget(label)
+        lay.addLayout(row)
+        return label, field, btn
+
+    def _more_toggled(self, opened: bool):
+        settings.put("more_open", opened)
+        QTimer.singleShot(0, self._fit_now)
+
+    def _restore_folders(self):
+        for key in ("src", "dst"):
+            d = settings.get("last_" + key)
+            if d and Path(d).is_dir():
+                setattr(self, key, Path(d))
+
+    def set_folder(self, which: str, d: str):
+        setattr(self, which, Path(d))
+        settings.put("last_" + which, d)
+        self.retranslate_paths()
+        self._refresh()
+
+    def retranslate_paths(self):
+        for field, path in ((self.src_field, self.src), (self.dst_field, self.dst)):
+            field.set_path(str(path) if path else "")
+            field.setPlaceholderText(tr("not_chosen"))
 
     def _fit_to_content(self):
         """Окно сразу вмещает всё содержимое без прокрутки (но не больше экрана)."""
@@ -289,6 +528,10 @@ class MainWindow(QMainWindow):
         avail = (self.screen() or QGuiApplication.primaryScreen()).availableGeometry()
         max_w, max_h = int(avail.width() * 0.95), int(avail.height() * 0.95)
         need_h, need_w = sa.verticalScrollBar().maximum(), sa.horizontalScrollBar().maximum()
+        if need_h <= 0 and need_w <= 0 and step < 3:  # лишнее место внизу убираем
+            spare = sa.viewport().height() - sa.widget().sizeHint().height()
+            if spare > 12:
+                self.resize(self.width(), max(320, self.height() - spare + 4))
         if (need_h > 0 or need_w > 0) and step < 25:
             if ((self.height() >= max_h - 2 and need_h > 0) or (self.width() >= max_w - 2 and need_w > 0)) and self._cur_px > 11:
                 self._px_cap = self._cur_px - 1  # не помещается по высоте экрана -> мельче шрифт
@@ -364,17 +607,6 @@ class MainWindow(QMainWindow):
         self._status_key = "choose_model_status"
         self.status.setText(tr("choose_model_status"))
 
-    def _picker(self, lay, slot):
-        row = QHBoxLayout()
-        btn = QPushButton()
-        lbl = QLabel()
-        btn.clicked.connect(slot)
-        btn.setMinimumWidth(190)
-        row.addWidget(btn)
-        row.addWidget(lbl, 1)
-        lay.addLayout(row)
-        return btn, lbl
-
     def _build_names_box(self, lay):
         o = NamingOptions.from_dict(settings.get("naming"))
         self.recursive = QCheckBox()
@@ -432,6 +664,9 @@ class MainWindow(QMainWindow):
         self.nm_example.setText(tr("nm_example", name=name))
 
     def retranslate(self):
+        self.open_done.setText(tr("open_when_done"))
+        self.pause_btn.setText(tr("resume") if self._is_paused() else tr("pause"))
+        self.cancel_btn.setText(tr("cancel"))
         self.rule_lbl.setText(tr("rule_label"))
         self.recursive.setText(tr("recursive"))
         self.names_box.setTitle(tr("names_group"))
@@ -442,10 +677,18 @@ class MainWindow(QMainWindow):
         self.nm_safe.setText(tr("nm_safe"))
         self._names_changed()
         self.settings_btn.setText("⚙ " + tr("settings"))
-        self.src_btn.setText(tr("src_btn"))
-        self.dst_btn.setText(tr("dst_btn"))
-        self.src_lbl.setText(str(self.src) if self.src else tr("not_chosen"))
-        self.dst_lbl.setText(str(self.dst) if self.dst else tr("not_chosen"))
+        self.card_folders.title.setText(tr("folders"))
+        self.card_options.title.setText(tr("options"))
+        self.src_lbl.setText(tr("src_btn"))
+        self.dst_lbl.setText(tr("dst_btn"))
+        self.src_btn.setText(tr("browse"))
+        self.dst_btn.setText(tr("browse"))
+        self.src_btn.setToolTip("Ctrl+O")
+        self.dst_btn.setToolTip("Ctrl+Shift+O")
+        self.more.btn.setText(tr("more_options"))
+        self.open_btn.setText(tr("open_folder"))
+        self.retranslate_paths()
+        self._update_hint()
         for i in range(self.rule.count()):
             self.rule.setItemText(i, tr("rule_" + self.rule.itemData(i)))
         self.sens_title.setText(tr("sens"))
@@ -468,23 +711,46 @@ class MainWindow(QMainWindow):
 
     def _refresh(self):
         self.start.setEnabled(bool(self.model and self.src and self.dst))
+        self._update_hint()
+
+    def _update_hint(self):
+        """Объясняем, почему кнопка запуска недоступна (а не просто серая кнопка)."""
+        busy = bool(self.worker and self.worker.isRunning())
+        if self.start.isEnabled() or busy:
+            text = ""
+        elif self.model is None and not (self.src and self.dst):
+            text = tr("need_folders")
+        elif self.model is None:
+            text = ""
+        else:
+            text = tr("need_folders")
+        self.hint.setText(text)
+        self.start.setToolTip(text or "Ctrl+Enter")
 
     def pick_src(self):
-        if d := QFileDialog.getExistingDirectory(self, tr("src_btn")):
-            self.src = Path(d)
-            self.src_lbl.setText(d)
-            self._refresh()
+        start = str(self.src or Path.home())
+        if d := QFileDialog.getExistingDirectory(self, tr("src_btn"), start):
+            self.set_folder("src", d)
 
     def pick_dst(self):
-        if d := QFileDialog.getExistingDirectory(self, tr("dst_btn")):
-            self.dst = Path(d)
-            self.dst_lbl.setText(d)
-            self._refresh()
+        start = str(self.dst or self.src or Path.home())
+        if d := QFileDialog.getExistingDirectory(self, tr("dst_btn"), start):
+            self.set_folder("dst", d)
+
+    def _eta(self, frac: float) -> str:
+        if not self._t0 or frac < 0.03:
+            return ""
+        elapsed = time.time() - self._t0
+        if elapsed < 4:
+            return ""
+        remaining = elapsed * (1 - frac) / frac
+        return tr("eta_less") if remaining < 60 else tr("eta_min", m=math.ceil(remaining / 60))
 
     def on_progress(self, frac, msg):
         self._status_key = None
         self.bar.setValue(int(frac * 100))
-        self.status.setText(msg)
+        eta = self._eta(frac)
+        self.status.setText(f"{msg} · {eta}" if eta else msg)
 
     def on_error(self, msg):
         self._busy(False)
@@ -497,36 +763,98 @@ class MainWindow(QMainWindow):
         self._busy(False)
         QTimer.singleShot(0, self._fit_now)
 
-    def _busy(self, busy: bool):
-        for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start, self.settings_btn, self.recursive, self.names_box):
+    def _busy(self, busy: bool, controls: bool = False):
+        for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start, self.settings_btn, self.recursive,
+                  self.names_box, self.open_done):
             x.setEnabled(not busy)
+        self.bar.setVisible(busy)
+        if busy:
+            self.summary_box.hide()
+        self.pause_btn.setVisible(busy and controls)
+        self.cancel_btn.setVisible(busy and controls)
+        self.pause_btn.setEnabled(True)
+        self.cancel_btn.setEnabled(True)
         if not busy:
             self._refresh()
+        QTimer.singleShot(0, self._fit_now)
+
+    def _is_paused(self) -> bool:
+        return bool(self.worker and getattr(self.worker, "paused", False) and self.worker.isRunning())
+
+    def toggle_pause(self):
+        w = self.worker
+        if not w or not hasattr(w, "pause") or not w.isRunning():
+            return
+        if w.paused:
+            w.resume()
+            self.pause_btn.setText(tr("pause"))
+        else:
+            w.pause()
+            self.pause_btn.setText(tr("resume"))
+            self.status.setText(tr("paused"))
+
+    def cancel_work(self):
+        w = self.worker
+        if w and hasattr(w, "cancel") and w.isRunning():
+            self.status.setText(tr("stopping"))
+            self.pause_btn.setEnabled(False)
+            self.cancel_btn.setEnabled(False)
+            w.cancel()
+
+    def on_cancelled(self):
+        self.status.setText(tr("cancelled"))
+        self._busy(False)
 
     def run(self):
         if self.src == self.dst:
             QMessageBox.warning(self, tr("folders"), tr("diff_folders"))
             return
-        self._busy(True)
+        self._t0 = time.time()
+        self.bar.setValue(0)
+        self._busy(True, controls=True)
+        self.pause_btn.setText(tr("pause"))
         self.worker = ScanWorker(self.model, self.src, self.dst, self.threshold(), True, self.recursive.isChecked())
         self.worker.progress.connect(self.on_progress)
         self.worker.done.connect(self.on_done)
+        self.worker.cancelled.connect(self.on_cancelled)
         self.worker.failed.connect(self.on_error)
         self.worker.start()
 
     def on_done(self, images, groups):
+        """Анализ закончен: выбираем, что оставить из групп, затем копируем в отдельном потоке."""
+        self._groups = groups
+        self.pause_btn.hide()
+        self.cancel_btn.hide()
         try:
             if groups and not self._resolve(groups):
                 self.status.setText(tr("cancelled"))
+                self._busy(False)
                 return
-            n = export_unique(self.dst, groups, images, self.naming())
-            self.status.setText(tr("done_status", n=n, g=len(groups)))
-            QTimer.singleShot(0, self._fit_now)
-            QMessageBox.information(self, tr("done"), tr("done_box", n=n, dst=self.dst))
         except Exception as e:
             self.on_error(str(e))
-        finally:
-            self._busy(False)
+            return
+        self._busy(True, controls=True)
+        self.pause_btn.setText(tr("pause"))
+        self.worker = ExportWorker(self.dst, groups, images, self.naming())
+        self.worker.progress.connect(self.on_progress)
+        self.worker.done.connect(self.on_export_done)
+        self.worker.cancelled.connect(self.on_cancelled)
+        self.worker.failed.connect(self.on_error)
+        self.worker.start()
+
+    def on_export_done(self, n: int):
+        groups = getattr(self, "_groups", [])
+        self._busy(False)
+        self.status.setText("")
+        self.summary.setText("✓ " + tr("done_status", n=n, g=len(groups)))
+        self.summary_box.show()
+        QTimer.singleShot(0, self._fit_now)
+        if self.open_done.isChecked():
+            self.open_destination()
+
+    def open_destination(self):
+        if self.dst:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.dst)))
 
     def _resolve(self, groups) -> bool:
         pick = RULES[self.rule.currentData()]
@@ -547,6 +875,6 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, e):
         if self.worker and self.worker.isRunning():
-            self.worker.requestInterruption()
+            (self.worker.cancel if hasattr(self.worker, "cancel") else self.worker.requestInterruption)()
             self.worker.wait(3000)
         super().closeEvent(e)

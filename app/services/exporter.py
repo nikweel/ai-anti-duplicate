@@ -1,5 +1,6 @@
 import csv
 import shutil
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
@@ -9,7 +10,10 @@ from .naming import NamingOptions, resolve
 
 
 def export_unique(
-    out_dir: Path, groups: list[DuplicateGroup], all_images: list[ImageInfo], naming: NamingOptions | None = None
+    out_dir: Path, groups: list[DuplicateGroup], all_images: list[ImageInfo], naming: NamingOptions | None = None,
+    progress: Callable[[int, int], None] = lambda d, t: None,
+    should_stop: Callable[[], bool] = lambda: False,
+    checkpoint: Callable[[], None] = lambda: None,
 ) -> int:
     """Копирует по одному файлу из каждой группы + все изображения без дубликатов.
 
@@ -23,11 +27,15 @@ def export_unique(
     to_copy = [i.path for i in all_images if i.path not in grouped]
     to_copy += [g.images[i].path for g in groups for i in g.keep]
     rows = []
-    for src in to_copy:
+    for k, src in enumerate(to_copy):
+        checkpoint()
+        if should_stop():  # отмена: уже скопированное остаётся, повторный запуск продолжит без дублей
+            break
         dst, need_copy = resolve(out_dir, src, naming)
         if need_copy:
             shutil.copy2(src, dst)
         rows.append((str(src), str(dst), "copied" if need_copy else "already_present"))
+        progress(k + 1, len(to_copy))
     try:
         LOG_DIR.mkdir(parents=True, exist_ok=True)
         with open(LOG_DIR / "last_export.csv", "w", newline="", encoding="utf-8") as f:
