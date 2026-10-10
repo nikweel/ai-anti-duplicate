@@ -31,6 +31,7 @@ Program je besplatan i nije potpisan certifikatom (certifikati se plaćaju), pa 
 - **Windows:** «Windows je zaštitio vaše računalo» → **Dodatne informacije → Ipak pokreni**.
 - **macOS:** otvorite **Postavke sustava → Privatnost i sigurnost**, pomaknite se prema dolje i kliknite **Ipak otvori** pokraj aplikacije.
 - **Linux:** bez upozorenja.
+- Podrška za RAW datoteke fotoaparata (CR2, NEF, ARW, DNG i dr.) — izvornik se ne mijenja
 
 ## Mogućnosti
 - Usporedba sadržaja fotografija umjetnom inteligencijom (zakretanje, smanjivanje i ponovna kompresija ne smetaju)

@@ -31,6 +31,7 @@ Het programma is gratis en niet ondertekend met een certificaat (die kosten geld
 - **Windows:** «Windows heeft uw pc beveiligd» → **Meer informatie → Toch uitvoeren**.
 - **macOS:** open **Systeeminstellingen → Privacy en beveiliging**, scrol omlaag en klik naast de app op **Toch openen**.
 - **Linux:** geen waarschuwingen.
+- Ondersteunt RAW-bestanden van camera's (CR2, NEF, ARW, DNG enz.) — het origineel wordt nooit gewijzigd
 
 ## Functies
 - AI-vergelijking van foto-inhoud (draaien, verkleinen of opnieuw comprimeren maakt niet uit)

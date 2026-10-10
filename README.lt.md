@@ -31,6 +31,7 @@ Programa nemokama ir nepasirašyta sertifikatu (sertifikatai mokami), todėl sis
 - **Windows:** „Windows apsaugojo jūsų kompiuterį“ → **Daugiau informacijos → Vis tiek vykdyti**.
 - **macOS:** atidarykite **Sistemos nustatymai → Privatumas ir sauga**, slinkite žemyn ir spustelėkite **Vis tiek atidaryti** šalia programos.
 - **Linux:** įspėjimų nėra.
+- Palaiko fotoaparatų RAW failus (CR2, NEF, ARW, DNG ir kt.) — originalas niekada nekeičiamas
 
 ## Galimybės
 - Nuotraukų turinio palyginimas dirbtiniu intelektu (pasukimas, sumažinimas ar pakartotinis suspaudimas netrukdo)

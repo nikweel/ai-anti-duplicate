@@ -31,6 +31,7 @@ O programa é gratuito e não tem assinatura de código (certificados são pagos
 - **Windows:** «O Windows protegeu o seu PC» → **Mais informações → Executar assim mesmo**.
 - **macOS:** abra **Ajustes do Sistema → Privacidade e Segurança**, role até o fim e clique em **Abrir Mesmo Assim** ao lado do app.
 - **Linux:** sem avisos.
+- Suporte a arquivos RAW de câmeras (CR2, NEF, ARW, DNG etc.) — o original nunca é alterado
 
 ## Recursos
 - Comparação de fotos por conteúdo com IA (girar, reduzir ou recomprimir não atrapalha)

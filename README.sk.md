@@ -31,6 +31,7 @@ Program je zadarmo a nie je podpísaný certifikátom (tie sú platené), preto 
 - **Windows:** „Systém Windows chránil váš počítač“ → **Ďalšie informácie → Napriek tomu spustiť**.
 - **macOS:** otvorte **Nastavenia systému → Súkromie a zabezpečenie**, posuňte sa nadol a kliknite vedľa aplikácie na **Napriek tomu otvoriť**.
 - **Linux:** bez upozornení.
+- Podpora RAW súborov z fotoaparátov (CR2, NEF, ARW, DNG a ďalšie) — originál sa nikdy nemení
 
 ## Funkcie
 - Porovnanie obsahu fotografií pomocou AI (otočenie, zmenšenie či prekomprimovanie neprekáža)

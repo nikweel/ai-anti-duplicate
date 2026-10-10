@@ -31,6 +31,7 @@ Programul este gratuit și nu are semnătură digitală (certificatele costă ba
 - **Windows:** «Windows a protejat computerul» → **Mai multe informații → Rulează oricum**.
 - **macOS:** deschide **Setări sistem → Confidențialitate și securitate**, derulează în jos și apasă **Deschide oricum** lângă aplicație.
 - **Linux:** fără avertismente.
+- Suport pentru fișiere RAW de la aparate foto (CR2, NEF, ARW, DNG etc.) — originalul nu este modificat niciodată
 
 ## Funcții
 - Compararea conținutului fotografiilor cu AI (rotirea, micșorarea sau recomprimarea nu contează)

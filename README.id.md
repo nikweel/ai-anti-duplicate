@@ -31,6 +31,7 @@ Program ini gratis dan tidak ditandatangani sertifikat kode (sertifikat berbayar
 - **Windows:** «Windows melindungi PC Anda» → **Info lebih lanjut → Tetap jalankan**.
 - **macOS:** buka **Pengaturan Sistem → Privasi & Keamanan**, gulir ke bawah dan klik **Tetap Buka** di samping aplikasi.
 - **Linux:** tanpa peringatan.
+- Mendukung berkas RAW kamera (CR2, NEF, ARW, DNG, dll.) — berkas asli tidak pernah diubah
 
 ## Fitur
 - Perbandingan isi foto dengan AI (diputar, diperkecil, atau dikompres ulang tidak masalah)

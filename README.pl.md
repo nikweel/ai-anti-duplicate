@@ -31,6 +31,7 @@ Program jest darmowy i nie jest podpisany certyfikatem (są płatne), dlatego sy
 - **Windows:** „System Windows ochronił ten komputer” → **Więcej informacji → Uruchom mimo to**.
 - **macOS:** otwórz **Ustawienia systemowe → Prywatność i ochrona**, przewiń w dół i kliknij **Otwórz mimo to** obok aplikacji.
 - **Linux:** bez ostrzeżeń.
+- Obsługa plików RAW z aparatów (CR2, NEF, ARW, DNG i inne) — oryginał nigdy nie jest zmieniany
 
 ## Funkcje
 - Porównanie zawartości zdjęć przez AI (obrót, zmniejszenie, ponowna kompresja nie przeszkadzają)

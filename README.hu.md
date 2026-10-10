@@ -31,6 +31,7 @@ A program ingyenes, és nincs tanúsítvánnyal aláírva (a tanúsítvány fize
 - **Windows:** „A Windows megvédte a számítógépét” → **További információ → Futtatás mégis**.
 - **macOS:** nyissa meg a **Rendszerbeállítások → Adatvédelem és biztonság** részt, görgessen lefelé, és kattintson az alkalmazás melletti **Megnyitás mindenképp** gombra.
 - **Linux:** nincs figyelmeztetés.
+- Fényképezőgépek RAW fájljainak támogatása (CR2, NEF, ARW, DNG stb.) — az eredeti sosem módosul
 
 ## Funkciók
 - A fényképek tartalmának összehasonlítása MI-vel (az elforgatás, kicsinyítés, újratömörítés nem zavar)

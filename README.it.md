@@ -31,6 +31,7 @@ Il programma è gratuito e non è firmato con un certificato (sono a pagamento),
 - **Windows:** «Windows ha protetto il PC» → **Ulteriori informazioni → Esegui comunque**.
 - **macOS:** apri **Impostazioni di Sistema → Privacy e sicurezza**, scorri in basso e premi **Apri comunque** accanto all'app.
 - **Linux:** nessun avviso.
+- Supporto ai file RAW delle fotocamere (CR2, NEF, ARW, DNG e altri) — l'originale non viene mai modificato
 
 ## Funzioni
 - Confronto del contenuto delle foto con l'IA (rotazione, riduzione o ricompressione non contano)

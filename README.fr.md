@@ -31,6 +31,7 @@ Le programme est gratuit et n'est pas signé par un certificat (ils sont payants
 - **Windows :** « Windows a protégé votre ordinateur » → **Informations complémentaires → Exécuter quand même**.
 - **macOS :** ouvrez **Réglages Système → Confidentialité et sécurité**, faites défiler et cliquez sur **Ouvrir quand même** à côté de l'app.
 - **Linux :** aucun avertissement.
+- Prise en charge des fichiers RAW d'appareils photo (CR2, NEF, ARW, DNG, etc.) — l'original n'est jamais modifié
 
 ## Fonctionnalités
 - Comparaison du contenu des photos par IA (rotation, réduction ou recompression sans effet)

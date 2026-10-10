@@ -31,6 +31,7 @@ Programmet er gratis og ikke kodesigneret (certifikater koster penge), så syste
 - **Windows:** »Windows har beskyttet din pc« → **Flere oplysninger → Kør alligevel**.
 - **macOS:** åbn **Systemindstillinger → Anonymitet og sikkerhed**, rul ned og klik på **Åbn alligevel** ved siden af appen.
 - **Linux:** ingen advarsler.
+- Understøtter kamera-RAW-filer (CR2, NEF, ARW, DNG m.fl.) — originalen ændres aldrig
 
 ## Funktioner
 - AI-sammenligning af fotoindhold (rotation, formindskelse og genkomprimering gør ikke noget)

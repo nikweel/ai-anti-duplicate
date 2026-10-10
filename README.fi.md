@@ -31,6 +31,7 @@ Ohjelma on ilmainen eikä ole koodiallekirjoitettu (varmenteet maksavat), joten 
 - **Windows:** ”Windows suojasi tietokonettasi” → **Lisätietoja → Suorita silti**.
 - **macOS:** avaa **Järjestelmäasetukset → Tietosuoja ja turvallisuus**, vieritä alas ja napsauta sovelluksen vieressä **Avaa silti**.
 - **Linux:** ei varoituksia.
+- Tukee kameroiden RAW-tiedostoja (CR2, NEF, ARW, DNG ym.) — alkuperäistä ei muuteta
 
 ## Ominaisuudet
 - Kuvien sisällön vertailu tekoälyllä (kääntäminen, pienentäminen tai uudelleenpakkaus ei haittaa)

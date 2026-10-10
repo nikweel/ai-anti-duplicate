@@ -31,6 +31,7 @@ Das Programm ist kostenlos und nicht mit einem Zertifikat signiert (Zertifikate 
 - **Windows:** „Der Computer wurde durch Windows geschützt“ → **Weitere Informationen → Trotzdem ausführen**.
 - **macOS:** **Systemeinstellungen → Datenschutz & Sicherheit** öffnen, nach unten scrollen und neben der App auf **Trotzdem öffnen** klicken.
 - **Linux:** keine Warnungen.
+- Unterstützt Kamera-RAW-Dateien (CR2, NEF, ARW, DNG u. a.) — das Original wird nie verändert
 
 ## Funktionen
 - KI-Vergleich des Foto-Inhalts (Drehen, Verkleinern, Neukomprimieren stört nicht)

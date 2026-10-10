@@ -31,6 +31,7 @@ El programa es gratuito y no está firmado con certificado (son de pago), por es
 - **Windows:** «Windows protegió su PC» → **Más información → Ejecutar de todas formas**.
 - **macOS:** abre **Ajustes del Sistema → Privacidad y seguridad**, baja y pulsa **Abrir de todos modos** junto a la app.
 - **Linux:** sin avisos.
+- Compatible con archivos RAW de cámaras (CR2, NEF, ARW, DNG, etc.); el original nunca se modifica
 
 ## Características
 - Comparación de fotos por contenido con IA (da igual girar, reducir o recomprimir)

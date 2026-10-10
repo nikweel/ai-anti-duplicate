@@ -31,6 +31,7 @@ Program ücretsizdir ve kod imzalı değildir (sertifikalar ücretlidir), bu yü
 - **Windows:** «Windows bilgisayarınızı korudu» → **Daha fazla bilgi → Yine de çalıştır**.
 - **macOS:** **Sistem Ayarları → Gizlilik ve Güvenlik**'i açın, aşağı kaydırıp uygulamanın yanındaki **Yine de Aç**'a tıklayın.
 - **Linux:** uyarı yok.
+- Kamera RAW dosyalarını destekler (CR2, NEF, ARW, DNG vb.) — orijinal asla değiştirilmez
 
 ## Özellikler
 - Yapay zekâ ile fotoğraf içeriği karşılaştırması (döndürme, küçültme, yeniden sıkıştırma sorun olmaz)

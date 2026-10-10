@@ -31,6 +31,7 @@ Programmet är gratis och inte kodsignerat (certifikat kostar pengar), så syste
 - **Windows:** ”Windows skyddade din dator” → **Mer information → Kör ändå**.
 - **macOS:** öppna **Systeminställningar → Integritet och säkerhet**, scrolla ned och klicka på **Öppna ändå** bredvid appen.
 - **Linux:** inga varningar.
+- Stöd för kamerors RAW-filer (CR2, NEF, ARW, DNG m.fl.) — originalet ändras aldrig
 
 ## Funktioner
 - AI-jämförelse av fotoinnehåll (rotering, förminskning eller omkomprimering spelar ingen roll)
