@@ -19,7 +19,7 @@ class ModelWorker(QThread):
     loaded = Signal(object)
     failed = Signal(str)
 
-    def __init__(self, model_id: str = "fast", device: str = "auto"):
+    def __init__(self, model_id: str = "light", device: str = "auto"):
         super().__init__()
         self.model_id, self.device = model_id, device
 

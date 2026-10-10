@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .core.clustering import cluster
 from .core.embedder import embed_images
-from .core.model_manager import MODELS, is_downloaded, load_model
+from .core.model_manager import DEFAULT_SENSITIVITY, MODELS, is_downloaded, load_model, threshold_for
 from .data.models import DuplicateGroup
 from .data.scanner import scan_folder
 from .services.exporter import export_unique
@@ -18,9 +18,9 @@ def main(argv: list[str]) -> int:
     ap.add_argument("src", type=Path)
     ap.add_argument("dst", type=Path)
     ap.add_argument("--rule", choices=[r for r in RULES if RULES[r]], default="newest")
-    ap.add_argument("--model", choices=list(MODELS), default="fast")
+    ap.add_argument("--model", choices=list(MODELS), default="light")
     ap.add_argument("--device", choices=["auto", "cpu", "gpu"], default="auto")
-    ap.add_argument("--sensitivity", type=int, default=33)
+    ap.add_argument("--sensitivity", type=int, default=DEFAULT_SENSITIVITY, help="0 = строго ... 100 = мягко")
     ap.add_argument("--no-recursive", action="store_true", help="не заходить во вложенные папки")
     ap.add_argument("--names", choices=["keep", "date"], default="keep")
     ap.add_argument("--date-source", choices=["exif", "created", "modified"], default="exif")
@@ -34,7 +34,7 @@ def main(argv: list[str]) -> int:
     print(f"\ndevice={model.device_name}")
     infos = [i for i in scan_folder(a.src, recursive=not a.no_recursive) if not i.path.is_relative_to(a.dst)]
     kept, emb = embed_images(model, infos)
-    thr = 0.98 - a.sensitivity * 0.0018 + MODELS[a.model].threshold_shift
+    thr = threshold_for(a.model, a.sensitivity)
     groups = []
     for idx in cluster(emb, thr):
         g = DuplicateGroup([kept[i] for i in idx])

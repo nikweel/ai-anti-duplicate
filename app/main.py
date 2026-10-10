@@ -25,6 +25,9 @@ def main() -> int:
 
         theme.apply_palette(app, settings.get("theme", "dark"))
         i18n.init()
+        from PySide6.QtCore import Qt
+
+        app.setLayoutDirection(Qt.RightToLeft if i18n.is_rtl() else Qt.LeftToRight)
         win = MainWindow()
         win.show()
         return app.exec()

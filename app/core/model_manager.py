@@ -20,33 +20,51 @@ class ModelSpec:
     file: str
     size_mb: int
     dim: int
-    threshold_shift: float = 0.0  # поправка порога схожести (у модели свой масштаб сходства)
+    size_bytes: int      # точный размер файла: защита от обрезанных/недокачанных файлов
+    thr_default: float   # порог схожести при положении ползунка по умолчанию (подобран по замерам)
+    thr_span: float      # на сколько порог меняется от самого строгого до самого мягкого положения
+    resize: int = 256    # короткая сторона до кропа
+    crop: int = 224
+    mean: tuple = (0.485, 0.456, 0.406)
+    std: tuple = (0.229, 0.224, 0.225)
 
 
+# Семейство DINOv2: в замерах лучше CLIP различает дубли и «похожие, но другие» кадры при меньшем размере
 MODELS = {
-    "fast": ModelSpec("fast", "clip_vision.onnx", 176, 512),  # CLIP ViT-B/32
-    "accurate": ModelSpec("accurate", "clip_vit_l14.onnx", 608, 768, -0.02),  # CLIP ViT-L/14
+    "light": ModelSpec("light", "dinov2_small.onnx", 44, 384, 44397267, 0.955, 0.06),
+    "medium": ModelSpec("medium", "dinov2_base.onnx", 174, 768, 173549573, 0.960, 0.06),
+    "heavy": ModelSpec("heavy", "dinov2_large.onnx", 609, 1024, 609124541, 0.925, 0.10),
 }
-
-_MEAN = np.array([0.48145466, 0.4578275, 0.40821073], np.float32)
-_STD = np.array([0.26862954, 0.26130258, 0.27577711], np.float32)
-_GPU = ("CUDAExecutionProvider", "DmlExecutionProvider", "CoreMLExecutionProvider")
+DEFAULT_SENSITIVITY = 33  # положение ползунка по умолчанию (0 = строго, 100 = мягко)
 
 
-def preprocess(im: Image.Image) -> np.ndarray:
-    """Идентично CLIPImageProcessor: resize короткой стороны до 224 (bicubic), центр-кроп, нормализация."""
+def threshold_for(model_id: str, sensitivity: int) -> float:
+    """Порог схожести для выбранной модели и положения ползунка (0 строго ... 100 мягко)."""
+    spec = MODELS.get(model_id) or MODELS["light"]
+    return spec.thr_default + (DEFAULT_SENSITIVITY - sensitivity) / 100 * spec.thr_span
+
+
+def preprocess(im: Image.Image, spec: ModelSpec) -> np.ndarray:
+    """Как в обработке DINOv2: уменьшение короткой стороны (bicubic), центральный кроп, нормализация."""
     im = im.convert("RGB")
     w, h = im.size
-    nw, nh = (224, int(224 * h / w)) if w <= h else (int(224 * w / h), 224)
+    nw, nh = (spec.resize, int(spec.resize * h / w)) if w <= h else (int(spec.resize * w / h), spec.resize)
     im = im.resize((nw, nh), Image.BICUBIC)
-    l, t = (nw - 224) // 2, (nh - 224) // 2
-    im = im.crop((l, t, l + 224, t + 224))
-    a = (np.asarray(im, np.float32) / 255 - _MEAN) / _STD
+    l, t = (nw - spec.crop) // 2, (nh - spec.crop) // 2
+    im = im.crop((l, t, l + spec.crop, t + spec.crop))
+    a = (np.asarray(im, np.float32) / 255 - np.array(spec.mean, np.float32)) / np.array(spec.std, np.float32)
     return a.transpose(2, 0, 1)
 
 
+LEGACY_IDS = {"fast": "light", "accurate": "medium"}  # старые названия в настройках
+
+
 def is_downloaded(model_id: str) -> bool:
-    return (MODELS_DIR / MODELS[model_id].file).exists()
+    p = MODELS_DIR / MODELS[model_id].file
+    return p.exists() and p.stat().st_size == MODELS[model_id].size_bytes  # неполный файл считается не скачанным
+
+
+_GPU = ("CUDAExecutionProvider", "DmlExecutionProvider", "CoreMLExecutionProvider")
 
 
 def available_gpu() -> str | None:
@@ -57,11 +75,12 @@ def available_gpu() -> str | None:
     return next((p for p in _GPU if p in have), None)
 
 
-class ClipOnnx:
-    def __init__(self, path, device: str = "auto", dim: int = 512):
+class OnnxEmbedder:
+    def __init__(self, path, device: str = "auto", spec: ModelSpec | None = None):
         import onnxruntime as ort
 
-        self.dim = dim
+        self.spec = spec or MODELS["light"]
+        self.dim = self.spec.dim
         gpu = available_gpu() if device in ("auto", "gpu") else None
         self.device_name = "CPU"
         self.session = None
@@ -82,13 +101,13 @@ class ClipOnnx:
         log.info("Устройство: %s", self.device_name)
 
     def _probe(self):
-        self.session.run(None, {"pixel_values": np.zeros((1, 3, 224, 224), np.float32)})
+        self.session.run(None, {"pixel_values": np.zeros((1, 3, self.spec.crop, self.spec.crop), np.float32)})
 
     def encode(self, images: list[Image.Image], batch_size: int = 16) -> np.ndarray:
         """L2-нормированные эмбеддинги [N, dim]."""
         out = []
         for i in range(0, len(images), batch_size):
-            x = np.stack([preprocess(im) for im in images[i:i + batch_size]])
+            x = np.stack([preprocess(im, self.spec) for im in images[i:i + batch_size]])
             e = self.session.run(None, {"pixel_values": x})[0]
             out.append(e / np.linalg.norm(e, axis=1, keepdims=True))
         return np.concatenate(out).astype(np.float32) if out else np.zeros((0, self.dim), np.float32)
@@ -110,13 +129,16 @@ def _download(spec: ModelSpec, progress: Progress) -> None:
             progress(pct / 100, tr("model_dl", p=pct, d=f"{done / 1e6:.0f}", t=f"{total / 1e6:.0f}"))
 
     urllib.request.urlretrieve(RELEASE + spec.file, tmp, hook)
+    if tmp.stat().st_size != spec.size_bytes:
+        tmp.unlink(missing_ok=True)
+        raise OSError(f"{spec.file}: файл скачан не полностью")
     tmp.replace(target)
 
 
-def load_model(model_id: str = "fast", device: str = "auto", progress: Progress = lambda f, m: None) -> ClipOnnx:
+def load_model(model_id: str = "light", device: str = "auto", progress: Progress = lambda f, m: None) -> OnnxEmbedder:
     spec = MODELS[model_id]
     path = MODELS_DIR / spec.file
-    if not path.exists():
+    if not is_downloaded(model_id):
         _download(spec, progress)
     progress(1.0, tr("model_mem"))
-    return ClipOnnx(path, device, spec.dim)
+    return OnnxEmbedder(path, device, spec)

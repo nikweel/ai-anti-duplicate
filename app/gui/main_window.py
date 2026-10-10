@@ -14,7 +14,7 @@ from ..services.naming import DATE_FORMATS, NamingOptions, format_date
 from datetime import datetime
 from PySide6.QtWidgets import QCheckBox, QGroupBox, QLineEdit
 from .. import i18n
-from ..core.model_manager import MODELS, is_downloaded
+from ..core.model_manager import DEFAULT_SENSITIVITY, LEGACY_IDS, MODELS, is_downloaded, threshold_for
 from ..utils import settings
 from ..i18n import tr
 from ..services.selection import RULES, pick_newest
@@ -60,6 +60,14 @@ class HoverPreview(QFrame):
         self.move(screen.center().x() - self.width() // 2, screen.center().y() - self.height() // 2)
         self.show()
         self.raise_()
+
+
+def compact(cb: QComboBox) -> QComboBox:
+    """Список не растягивает окно под самую длинную строку (полный текст виден при раскрытии)."""
+    cb.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
+    cb.setMinimumContentsLength(18)
+    cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+    return cb
 
 
 class ScaledImage(QLabel):
@@ -207,7 +215,9 @@ class MainWindow(QMainWindow):
 
         self.src_btn, self.src_lbl = self._picker(lay, self.pick_src)
         self.dst_btn, self.dst_lbl = self._picker(lay, self.pick_dst)
-        self.rule = QComboBox()
+        self.rule_lbl = QLabel()
+        lay.addWidget(self.rule_lbl)
+        self.rule = compact(QComboBox())
         for rid in RULES:
             self.rule.addItem("", rid)
         lay.addWidget(self.rule)
@@ -217,7 +227,7 @@ class MainWindow(QMainWindow):
         srow = QHBoxLayout()
         self.sens = QSlider(Qt.Horizontal)
         self.sens.setRange(0, 100)
-        self.sens.setValue(33)
+        self.sens.setValue(DEFAULT_SENSITIVITY)
         self.sens.valueChanged.connect(self._sens_changed)
         self.strict_lbl, self.soft_lbl = QLabel(), QLabel()
         srow.addWidget(self.strict_lbl)
@@ -233,6 +243,7 @@ class MainWindow(QMainWindow):
         self.start.clicked.connect(self.run)
         self.bar = QProgressBar()
         self.status = QLabel()
+        self.status.setWordWrap(True)
         for x in (self.start, self.bar, self.status):
             lay.addWidget(x)
         self.retranslate()
@@ -243,6 +254,7 @@ class MainWindow(QMainWindow):
     def _fit_to_content(self):
         """Окно сразу вмещает всё содержимое без прокрутки (но не больше экрана)."""
         self._fit_done = False
+        self._px_cap = 30
         self.resize(720, 400)
 
     def showEvent(self, e):
@@ -252,20 +264,28 @@ class MainWindow(QMainWindow):
         self._fit_done = True
         QTimer.singleShot(0, self._fit_now)
 
-    def _fit_now(self):
+    def _fit_now(self, step: int = 0):
+        """Подгоняет окно под содержимое; если экрана не хватает, уменьшает шрифт (до 11 px).
+        Идёт короткими шагами, потому что Qt пересчитывает размеры не мгновенно."""
         sa = self.centralWidget()
         avail = (self.screen() or QGuiApplication.primaryScreen()).availableGeometry()
-        for _ in range(4):  # шрифт зависит от ширины окна, поэтому подгоняем в несколько шагов
-            QApplication.processEvents()
-            need_h, need_w = sa.verticalScrollBar().maximum(), sa.horizontalScrollBar().maximum()
-            if need_h <= 0 and need_w <= 0:
-                break
-            self.resize(min(self.width() + need_w, int(avail.width() * 0.95)),
-                        min(self.height() + need_h, int(avail.height() * 0.95)))
+        max_w, max_h = int(avail.width() * 0.95), int(avail.height() * 0.95)
+        need_h, need_w = sa.verticalScrollBar().maximum(), sa.horizontalScrollBar().maximum()
+        if (need_h > 0 or need_w > 0) and step < 25:
+            if ((self.height() >= max_h - 2 and need_h > 0) or (self.width() >= max_w - 2 and need_w > 0)) and self._cur_px > 11:
+                self._px_cap = self._cur_px - 1  # не помещается по высоте экрана -> мельче шрифт
+                self._px = None
+                self._cur_px = self._px_cap
+                self.setStyleSheet(theme.build_style(self._px_cap, settings.get("theme", "dark")))
+            else:
+                self.resize(min(self.width() + need_w, max_w), min(self.height() + need_h, max_h))
+        if (need_h > 0 or need_w > 0 or step < 3) and step < 25:  # минимум 3 проверки: Qt пересчитывает размеры с задержкой
+            QTimer.singleShot(60, lambda: self._fit_now(step + 1))
 
     def current_model(self) -> str | None:
         """Выбранная модель; если не выбрана, берём любую уже скачанную."""
         mid = settings.get("model")
+        mid = LEGACY_IDS.get(mid, mid)
         if mid in MODELS:
             return mid
         return next((m for m in MODELS if is_downloaded(m)), None)
@@ -303,10 +323,13 @@ class MainWindow(QMainWindow):
                 self.load_engine(self.current_model())
             return
         i18n.set_lang(dlg.lang.currentData())
+        QApplication.instance().setLayoutDirection(Qt.RightToLeft if i18n.is_rtl() else Qt.LeftToRight)
         settings.put("theme", dlg.theme.currentData())
         settings.put("device", dlg.device.currentData())
         self.apply_theme()
         self.retranslate()
+        self._px_cap = 30
+        QTimer.singleShot(0, self._fit_now)  # другой язык — другая длина подписей
         mid = dlg.chosen_model()
         if mid:
             settings.put("model", mid)
@@ -343,19 +366,19 @@ class MainWindow(QMainWindow):
         self.names_box = QGroupBox()
         g = QVBoxLayout(self.names_box)
         g.setSpacing(8)
-        self.nm_mode = QComboBox()
+        self.nm_mode = compact(QComboBox())
         for k in ("keep", "date"):
             self.nm_mode.addItem("", k)
-        self.nm_src = QComboBox()
+        self.nm_src = compact(QComboBox())
         for k in ("exif", "created", "modified"):
             self.nm_src.addItem("", k)
-        self.nm_fmt = QComboBox()
+        self.nm_fmt = compact(QComboBox())
         for k in DATE_FORMATS:
             self.nm_fmt.addItem("", k)
         self.nm_custom = QLineEdit(o.custom)
         self.nm_custom_hint = QLabel()
         self.nm_custom_hint.setWordWrap(True)
-        self.nm_conf = QComboBox()
+        self.nm_conf = compact(QComboBox())
         for k in ("counter", "prefix"):
             self.nm_conf.addItem("", k)
         self.nm_example = QLabel()
@@ -391,6 +414,7 @@ class MainWindow(QMainWindow):
         self.nm_example.setText(tr("nm_example", name=name))
 
     def retranslate(self):
+        self.rule_lbl.setText(tr("rule_label"))
         self.recursive.setText(tr("recursive"))
         self.names_box.setTitle(tr("names_group"))
         for cb, prefix in ((self.nm_mode, "nm_mode_"), (self.nm_src, "nm_src_"), (self.nm_fmt, "nm_fmt_"), (self.nm_conf, "nm_conf_")):
@@ -419,8 +443,7 @@ class MainWindow(QMainWindow):
         self.retranslate()
 
     def threshold(self) -> float:
-        shift = MODELS[self.model_id].threshold_shift if getattr(self, "model_id", None) in MODELS else 0.0
-        return 0.98 - self.sens.value() * 0.0018 + shift  # 0 -> 0.98 (strict), 100 -> 0.80 (soft)
+        return threshold_for(getattr(self, "model_id", "light"), self.sens.value())
 
     def _sens_changed(self, v: int):
         self.sens_hint.setText(tr("sens_low" if v < 25 else "sens_mid" if v < 60 else "sens_high"))
@@ -454,6 +477,7 @@ class MainWindow(QMainWindow):
         self._status_key = None
         self.status.setText(tr("ready_dev", dev=model.device_name))
         self._busy(False)
+        QTimer.singleShot(0, self._fit_now)
 
     def _busy(self, busy: bool):
         for x in (self.src_btn, self.dst_btn, self.rule, self.sens, self.start, self.settings_btn, self.recursive, self.names_box):
@@ -479,6 +503,7 @@ class MainWindow(QMainWindow):
                 return
             n = export_unique(self.dst, groups, images, self.naming())
             self.status.setText(tr("done_status", n=n, g=len(groups)))
+            QTimer.singleShot(0, self._fit_now)
             QMessageBox.information(self, tr("done"), tr("done_box", n=n, dst=self.dst))
         except Exception as e:
             self.on_error(str(e))
@@ -496,7 +521,7 @@ class MainWindow(QMainWindow):
 
     def resizeEvent(self, e):
         # the interface scales together with the window
-        px = int(max(13, min(30, 13 * self.width() / 560)))
+        px = int(max(11, min(getattr(self, "_px_cap", 30), 13 * self.width() / 560)))
         if px != getattr(self, "_px", None):
             self._px = self._cur_px = px
             self.setStyleSheet(theme.build_style(px, settings.get("theme", "dark")))

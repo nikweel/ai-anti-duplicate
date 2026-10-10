@@ -1,6 +1,6 @@
 # AI Anti-Duplicate
 
-**English** · [Русский](README.ru.md)
+**English** · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
 
 Free, open-source tool that finds duplicate photos by **what is in the picture**, not by file size, date or hash.
 It uses the CLIP AI model, so it recognises the same shot even if it was resized, re-compressed, cropped a little or rotated.
@@ -41,10 +41,19 @@ The program searches **all subfolders** (can be switched off with *Search in sub
 A list of what was copied where is saved to `data/logs/last_export.csv`.
 
 ## Settings (⚙ button)
-- **Language:** English / Русский.
+- **Language:** 12 languages — English, Русский, 中文, Español, हिन्दी, Português, Français, Deutsch, 日本語, العربية, Bahasa Indonesia, Türkçe (Arabic is shown right-to-left). The language is detected from your system on first launch.
 - **Theme:** dark, light or follow the system.
-- **Model:** *Fast* (176 MB, works well on a CPU) or *Accurate* (608 MB, tells similar shots apart better, recommended with a GPU). The size of each download is shown before you choose. On the first launch no model is installed: the app asks you to pick one in Settings and then downloads it with a progress bar.
-- **Device:** Auto / CPU / GPU. Auto uses the graphics card when available (DirectML on Windows, CoreML on macOS) and falls back to the CPU if anything goes wrong.
+- **Recognition model** (the size of each download is shown before you choose):
+
+  | Model | Size | What it is for |
+  |---|---|---|
+  | **Light** | 44 MB | The fastest; works well on any computer. Good for most photo collections. |
+  | **Medium** | 174 MB | Slower, tells similar photos apart more precisely. Comfortable with a graphics card. |
+  | **Heavy** | 609 MB | The slowest and the most accurate: notices the smallest differences. Best with a powerful graphics card. |
+
+  On the first launch no model is installed: the app asks you to pick one in Settings and downloads it with a progress bar. Under the hood these are [DINOv2](https://github.com/facebookresearch/dinov2) models (Apache 2.0) converted to ONNX; in our tests they separate real duplicates from merely similar photos better than CLIP while being much smaller.
+- **Computing device:** automatic / CPU / GPU. *Automatic* uses the graphics card when available (DirectML on Windows, CoreML on macOS) and falls back to the CPU if anything goes wrong.
+- **Matching strictness** (slider on the main window): *Strict* finds only practically identical photos, *Loose* also catches merely similar ones. The default position is calibrated separately for each model.
 
 ## Download (no installation of Python needed)
 Get the file for your system from the [**Releases**](https://github.com/nikweel/ai-anti-duplicate/releases/latest) page:
@@ -64,12 +73,25 @@ The app is free and not code-signed (certificates cost money), so your system ma
 - **macOS:** open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the app (on older macOS: right-click the app → *Open*).
 - **Linux:** no warnings. For AppImage just allow executing it (right-click → Properties → *Allow executing as program*).
 
+## How the models were chosen
+We compared embedding models on real photos: true duplicates (resized, re-compressed, cropped, brightened) against *hard negatives* — the same photo with part of the picture replaced (a stand-in for "same pose, different expression"). The score is the AUC of telling the two groups apart (1.0 = perfect); speed is measured on a CPU.
+
+| Model | Size | AUC | Speed per photo |
+|---|---|---|---|
+| CLIP ViT-B/32 | 176 MB | 0.836 | ~22 ms |
+| CLIP ViT-L/14 | 608 MB | 0.875 | ~325 ms |
+| **DINOv2 small (Light)** | 44 MB | 0.889 | ~37 ms |
+| **DINOv2 base (Medium)** | 174 MB | 0.894 | ~102 ms |
+| **DINOv2 large (Heavy)** | 609 MB | 0.909 | ~330 ms |
+
+This is a small test set (about 40 photos from one machine), so treat the numbers as a trend, not a guarantee. Scripts: `scripts/export_dinov2.py`, `scripts/shrink_onnx.py`.
+
 ## Run from source (portable, no manual setup)
 Download the repository and double-click `start.cmd` (Windows), `start.command` (macOS) or `start.sh` (Linux).
 The first run downloads Python and all dependencies into the local `runtime/` folder automatically.
 
 ## Development
-- Model export: `scripts/export_onnx.py`, `scripts/shrink_onnx.py` (PyTorch → ONNX, fp16 weights; the result matches the original to within 0.0001 similarity).
+- Model export: `scripts/export_dinov2.py` (PyTorch → ONNX) and `scripts/shrink_onnx.py` (fp16 weights; the result matches the original to within 0.0003 similarity). Model files are served from the `v0.1` release and verified by exact size after download.
 - Build: `pyinstaller packaging.spec`; packages: `packaging/`; CI: `.github/workflows/build.yml` (push a tag `app-v*`).
 - Tests: `pytest`.
 
@@ -77,7 +99,7 @@ Pull requests and ideas are welcome!
 
 ## License
 [MIT](LICENSE) — free for any use, including commercial. Do whatever you like, just keep the copyright notice.
-The CLIP model is by OpenAI (MIT).
+The models are DINOv2 by Meta AI (Apache 2.0).
 
 ## Author
 Nikolay Fedotov — [tech-crm.ru](https://tech-crm.ru/) · [VK](https://vk.ru/id191178167) · [MAX](https://max.ru/u/f9LHodD0cOInyBtQrxPp6Z1O_g2V8Ck-1hzBxWg_l9EN48ubud67NUWeyTM) · [Facebook](https://www.facebook.com/nikweel) · [GitHub](https://github.com/nikweel)
