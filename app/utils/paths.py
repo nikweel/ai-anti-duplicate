@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 FROZEN = bool(getattr(sys, "frozen", False))
-APP_NAME = "AI-Anti-Duplicate"
+APP_NAME = "Photo-Duplicate-Finder-AI"
 # папка с ресурсами (иконка и т.п.)
 RESOURCES = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
 
@@ -25,6 +25,19 @@ CACHE_DIR = DATA_DIR / "cache"
 ICON = RESOURCES / "assets" / "icon.svg"
 
 
+def migrate_old_data() -> None:
+    """Приложение раньше называлось AI-Anti-Duplicate: переносим настройки и убираем устаревшие файлы моделей."""
+    try:
+        old = ROOT.parent / "AI-Anti-Duplicate"
+        if FROZEN and old.exists() and not ROOT.exists():
+            old.rename(ROOT)
+        for name in ("clip_vision.onnx", "clip_vit_l14.onnx"):  # модели CLIP заменены на DINOv2
+            (MODELS_DIR / name).unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
 def ensure_dirs() -> None:
+    migrate_old_data()
     for d in (MODELS_DIR, LOG_DIR, CACHE_DIR):
         d.mkdir(parents=True, exist_ok=True)

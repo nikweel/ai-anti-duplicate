@@ -1,4 +1,4 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 [English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · **Türkçe**
 
@@ -15,7 +15,7 @@ Yinelenen fotoğrafları dosya boyutuna, tarihe veya karma değerine göre deği
 4. «Kopyaları bul ve kaydet»e basın. Kopyası olmayan fotoğraflar olduğu gibi kopyalanır; her kopya grubundan ise yalnızca sizin seçtiğiniz fotoğraf(lar).
 
 ## İndirme (Python kurmanız gerekmez)
-Sisteminize uygun dosyayı [Releases](https://github.com/nikweel/ai-anti-duplicate/releases/latest) sayfasından indirin:
+Sisteminize uygun dosyayı [Releases](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest) sayfasından indirin:
 
 | Sistem | Dosya | Nasıl çalıştırılır |
 |---|---|---|

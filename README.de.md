@@ -1,4 +1,4 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 [English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · **Deutsch** · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
 
@@ -15,7 +15,7 @@ Kostenloses Open-Source-Werkzeug, das doppelte Fotos anhand ihres **Bildinhalts*
 4. Klicken Sie auf „Duplikate finden und speichern“. Fotos ohne Duplikate werden unverändert kopiert, aus jeder Duplikatgruppe nur die von Ihnen gewählte(n).
 
 ## Download (kein Python nötig)
-Laden Sie die Datei für Ihr System von der Seite [Releases](https://github.com/nikweel/ai-anti-duplicate/releases/latest) herunter:
+Laden Sie die Datei für Ihr System von der Seite [Releases](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest) herunter:
 
 | System | Datei | Starten |
 |---|---|---|

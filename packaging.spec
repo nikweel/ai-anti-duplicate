@@ -9,8 +9,8 @@ a = Analysis(
               "PySide6.QtPdf", "PySide6.QtOpenGL", "torch", "matplotlib", "scipy", "pandas"],
 )
 pyz = PYZ(a.pure)
-exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name="AI-Anti-Duplicate", console=False,
+exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name="Photo-Duplicate-Finder-AI", console=False,
           icon="assets/icon.ico" if sys.platform == "win32" else None)
-coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="AI-Anti-Duplicate")
+coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="Photo-Duplicate-Finder-AI")
 if sys.platform == "darwin":
-    app = BUNDLE(coll, name="AI-Anti-Duplicate.app", icon="assets/icon.icns", bundle_identifier="ru.nikweel.antiduplicate")
+    app = BUNDLE(coll, name="Photo-Duplicate-Finder-AI.app", icon="assets/icon.icns", bundle_identifier="ru.nikweel.photoduplicatefinderai")

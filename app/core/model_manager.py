@@ -11,7 +11,7 @@ from ..utils.paths import MODELS_DIR
 
 log = logging.getLogger(__name__)
 Progress = Callable[[float, str], None]
-RELEASE = "https://github.com/nikweel/ai-anti-duplicate/releases/download/v0.1/"
+RELEASE = "https://github.com/nikweel/photo-duplicate-finder-ai/releases/download/v0.1/"
 
 
 @dataclass(frozen=True)

@@ -10,7 +10,7 @@ set "UV_PROJECT_ENVIRONMENT=%RT%\venv"
 set "UV_MANAGED_PYTHON=1"
 if /i not "%~1"=="--hidden" if exist "%RT%\venv" if exist "%RT%\hidden.vbs" ( start "" wscript "%RT%\hidden.vbs" & exit /b )
 if not exist "%RT%\uv.exe" (
-  echo [AI Anti-Duplicate] Первый запуск: подготовка окружения, нужен интернет...
+  echo [Photo Duplicate Finder AI] Первый запуск: подготовка окружения, нужен интернет...
   mkdir "%RT%" 2>nul
   set "A=x86_64"
   if /i "%PROCESSOR_ARCHITECTURE%"=="ARM64" set "A=aarch64"
@@ -34,7 +34,7 @@ cd "$(dirname "$0")" || exit 1
 ROOT="$(pwd)"; RT="$ROOT/runtime"
 export UV_CACHE_DIR="$RT/cache" UV_PYTHON_INSTALL_DIR="$RT/python" UV_PROJECT_ENVIRONMENT="$RT/venv" UV_MANAGED_PYTHON=1
 if [ ! -x "$RT/uv" ]; then
-  echo "[AI Anti-Duplicate] Первый запуск: подготовка окружения, нужен интернет..."
+  echo "[Photo Duplicate Finder AI] Первый запуск: подготовка окружения, нужен интернет..."
   mkdir -p "$RT"
   case "$(uname -m)" in arm64|aarch64) A=aarch64;; *) A=x86_64;; esac
   case "$(uname -s)" in

@@ -1,4 +1,4 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 [English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · **Bahasa Indonesia** · [Türkçe](README.tr.md)
 
@@ -15,7 +15,7 @@ Alat gratis dan sumber terbuka yang menemukan foto duplikat berdasarkan **isi ga
 4. Klik «Cari duplikat dan simpan». Foto tanpa duplikat disalin apa adanya, dan dari setiap grup duplikat hanya foto yang Anda pilih.
 
 ## Unduh (tidak perlu memasang Python)
-Unduh berkas untuk sistem Anda dari halaman [Releases](https://github.com/nikweel/ai-anti-duplicate/releases/latest):
+Unduh berkas untuk sistem Anda dari halaman [Releases](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest):
 
 | Sistem | Berkas | Cara menjalankan |
 |---|---|---|

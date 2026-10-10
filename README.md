@@ -1,9 +1,10 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 **English** · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
 
-Free, open-source tool that finds duplicate photos by **what is in the picture**, not by file size, date or hash.
-It uses the CLIP AI model, so it recognises the same shot even if it was resized, re-compressed, cropped a little or rotated.
+**Photo Duplicate Finder AI** is a free, open-source app for finding duplicate **photos** (JPG, PNG, WebP) by **what is in the picture** — not by file size, date or hash.
+It uses AI (DINOv2), so it recognises the same shot even if it was resized, re-compressed, cropped a little or rotated.
+It is built for photo collections only; it is not a general tool for finding duplicate documents, videos or other files.
 
 > 🛡️ **Safe by design:** the app only *copies* files. It never deletes, moves or changes your originals.
 
@@ -56,7 +57,7 @@ A list of what was copied where is saved to `data/logs/last_export.csv`.
 - **Matching strictness** (slider on the main window): *Strict* finds only practically identical photos, *Loose* also catches merely similar ones. The default position is calibrated separately for each model.
 
 ## Download (no installation of Python needed)
-Get the file for your system from the [**Releases**](https://github.com/nikweel/ai-anti-duplicate/releases/latest) page:
+Get the file for your system from the [**Releases**](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest) page:
 
 | System | File | How to run |
 |---|---|---|

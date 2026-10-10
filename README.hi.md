@@ -1,4 +1,4 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 [English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · **हिन्दी** · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
 
@@ -15,7 +15,7 @@
 4. «डुप्लिकेट खोजें और सहेजें» दबाएँ। बिना डुप्लिकेट वाली फ़ोटो सीधे कॉपी होती हैं, और हर डुप्लिकेट समूह से केवल आपकी चुनी हुई फ़ोटो।
 
 ## डाउनलोड (Python इंस्टॉल करने की ज़रूरत नहीं)
-[Releases](https://github.com/nikweel/ai-anti-duplicate/releases/latest) पेज से अपने सिस्टम की फ़ाइल डाउनलोड करें:
+[Releases](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest) पेज से अपने सिस्टम की फ़ाइल डाउनलोड करें:
 
 | सिस्टम | फ़ाइल | कैसे चलाएँ |
 |---|---|---|

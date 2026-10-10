@@ -186,7 +186,7 @@ class ReviewDialog(QDialog):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("AI Anti-Duplicate")
+        self.setWindowTitle("Photo Duplicate Finder AI")
         self.setMinimumWidth(520)
         self.setWindowIcon(QIcon(str(ICON)))
         self.src: Path | None = None
@@ -297,7 +297,7 @@ class MainWindow(QMainWindow):
             return
         self._status_key = "choose_model_status"
         self.status.setText(tr("choose_model_status"))
-        QMessageBox.information(self, "AI Anti-Duplicate", tr("choose_model_msg"))
+        QMessageBox.information(self, "Photo Duplicate Finder AI", tr("choose_model_msg"))
         self.open_settings()
 
     def load_engine(self, mid: str):

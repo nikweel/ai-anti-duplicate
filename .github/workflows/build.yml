@@ -39,7 +39,7 @@ jobs:
         if: startsWith(matrix.name, 'macos')
         run: |
           mkdir -p release
-          hdiutil create -volname "AI Anti-Duplicate" -srcfolder dist/AI-Anti-Duplicate.app -ov -format UDZO "release/AI-Anti-Duplicate-$APP_VERSION-${{ matrix.name }}.dmg"
+          hdiutil create -volname "Photo Duplicate Finder AI" -srcfolder dist/Photo-Duplicate-Finder-AI.app -ov -format UDZO "release/Photo-Duplicate-Finder-AI-$APP_VERSION-${{ matrix.name }}.dmg"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}

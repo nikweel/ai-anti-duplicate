@@ -1,4 +1,4 @@
-"""Режим без окна: AI-Anti-Duplicate --cli <папка_с_фото> <папка_для_уникальных> [--rule newest|largest|resolution]
+"""Режим без окна: Photo-Duplicate-Finder-AI --cli <папка_с_фото> <папка_для_уникальных> [--rule newest|largest|resolution]
 [--model fast|accurate] [--device auto|cpu|gpu] [--sensitivity 0..100]. Только копирует файлы."""
 import argparse
 from pathlib import Path
@@ -14,7 +14,7 @@ from .services.selection import RULES
 
 
 def main(argv: list[str]) -> int:
-    ap = argparse.ArgumentParser(prog="AI-Anti-Duplicate --cli")
+    ap = argparse.ArgumentParser(prog="Photo-Duplicate-Finder-AI --cli")
     ap.add_argument("src", type=Path)
     ap.add_argument("dst", type=Path)
     ap.add_argument("--rule", choices=[r for r in RULES if RULES[r]], default="newest")

@@ -1,4 +1,4 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 [English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · **العربية** · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
 
@@ -15,7 +15,7 @@
 4. اضغط «ابحث عن المكرّرات واحفظ». تُنسخ الصور غير المكرّرة كما هي، ومن كل مجموعة مكرّرات تُنسخ الصورة (أو الصور) التي اخترتها فقط.
 
 ## التنزيل (لا حاجة لتثبيت Python)
-نزّل الملف المناسب لنظامك من صفحة [Releases](https://github.com/nikweel/ai-anti-duplicate/releases/latest):
+نزّل الملف المناسب لنظامك من صفحة [Releases](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest):
 
 | النظام | الملف | طريقة التشغيل |
 |---|---|---|

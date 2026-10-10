@@ -1,4 +1,4 @@
-# AI Anti-Duplicate
+# Photo Duplicate Finder AI
 
 [English](README.md) · [Русский](README.ru.md) · **中文** · [Español](README.es.md) · [हिन्दी](README.hi.md) · [Português](README.pt.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [العربية](README.ar.md) · [Bahasa Indonesia](README.id.md) · [Türkçe](README.tr.md)
 
@@ -15,7 +15,7 @@
 4. 点击“查找重复项并保存”。没有重复的照片会直接复制，每组重复项只复制您选定的那一张（或几张）。
 
 ## 下载（无需安装 Python）
-从 [Releases](https://github.com/nikweel/ai-anti-duplicate/releases/latest) 页面下载适合您系统的文件：
+从 [Releases](https://github.com/nikweel/photo-duplicate-finder-ai/releases/latest) 页面下载适合您系统的文件：
 
 | 系统 | 文件 | 如何运行 |
 |---|---|---|

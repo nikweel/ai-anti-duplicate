@@ -17,8 +17,8 @@ def main() -> int:
         from .gui.main_window import MainWindow
 
         app = QApplication(sys.argv)
-        app.setApplicationName("AI Anti-Duplicate")
-        app.setDesktopFileName("ai-anti-duplicate")
+        app.setApplicationName("Photo Duplicate Finder AI")
+        app.setDesktopFileName("photo-duplicate-finder-ai")
         app.setStyle("Fusion")
         from .gui import theme
         from .utils import settings
